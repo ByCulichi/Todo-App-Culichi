@@ -1,23 +1,18 @@
-# 📝 ToDo App
+📝 ToDo App
+A simple to-do list application built with HTML, CSS, and JavaScript. This project is part of my portfolio and is a work in progress, with new features and improvements to be added over time.
 
-Aplicación de lista de tareas (ToDo) desarrollada con **HTML, CSS y JavaScript**.  
-Este proyecto forma parte de mi portafolio y está en progreso, con mejoras y nuevas funcionalidades que se irán agregando con el tiempo.
+🚀 Features
+Add new tasks.
 
----
+Mark tasks as completed.
 
-## 🚀 Características
+Delete tasks.
 
-- Agregar nuevas tareas.  
-- Marcar tareas como completadas.  
-- Eliminar tareas.  
-- Interfaz simple y responsive.  
+Simple and responsive interface.
 
----
+🛠️ Technologies Used
+HTML5
 
-## 🛠️ Tecnologías utilizadas
+CSS3
 
-- **HTML5**  
-- **CSS3**  
-- **JavaScript (Vanilla)**  
-
----
+JavaScript (Vanilla)

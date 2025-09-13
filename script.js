@@ -4,12 +4,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('task-list');
     const emptyImage = document.querySelector('.empty-image');
     const todosContainer = document.querySelector('.todos-container');
+    const progressBar = document.getElementById('progress'); // ✅ corregido
+    const progressNumbers = document.getElementById('numbers');
 
+    // --- Mostrar / ocultar imagen de vacío ---
     const toggleEmptyImage = () => {
         emptyImage.style.display = taskList.children.length === 0 ? 'block' : 'none';
         todosContainer.style.width = taskList.children.length > 0 ? '100%' : '50%';
     };
 
+    // --- Actualizar barra de progreso ---
+    const updateProgressBar = () => {
+        const totalTasks = taskList.children.length;
+        const completedTasks = taskList.querySelectorAll('.checkbox:checked').length;
+
+        progressBar.style.width = totalTasks === 0 ? '0%' : `${(completedTasks / totalTasks) * 100}%`;
+        progressNumbers.textContent = totalTasks === 0 ? '0/0' : `${completedTasks}/${totalTasks}`;
+    };
+
+    // --- Guardar en localStorage ---
+    const saveTasks = () => {
+        const tasks = [];
+        taskList.querySelectorAll('li').forEach(li => {
+            tasks.push({
+                text: li.querySelector('span').textContent,
+                completed: li.classList.contains('completed')
+            });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    // --- Añadir tarea ---
     const addTask = (text, completed = false) => {
         const taskText = text || taskInput.value.trim();
         if (taskText !== '') {
@@ -27,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const editBtn = li.querySelector('.edit-btn');
             const deleteBtn = li.querySelector('.delete-btn');
 
+            // --- Marcar completado ---
             if (completed) {
                 li.classList.add('completed');
                 editBtn.setAttribute('disabled', true);
@@ -38,35 +64,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isChecked = checkbox.checked;
                 li.classList.toggle('completed', isChecked);
                 editBtn.disabled = isChecked;
-                if (isChecked) {
-                    editBtn.setAttribute('disabled', true);
-                } else {
-                    editBtn.removeAttribute('disabled');
-                }
                 editBtn.style.opacity = isChecked ? 0.5 : 1;
                 editBtn.style.pointerEvents = isChecked ? 'none' : 'auto';
+                saveTasks();
+                updateProgressBar();
             });
 
+            // --- Editar tarea ---
             editBtn.addEventListener('click', () => {
                 if (!checkbox.checked) {
                     taskInput.value = li.querySelector('span').textContent;
                     li.remove();
                     toggleEmptyImage();
+                    saveTasks();
+                    updateProgressBar();
                 }
             });
 
+            // --- Borrar tarea ---
             deleteBtn.addEventListener('click', () => {
                 li.remove();
                 toggleEmptyImage();
+                saveTasks();
+                updateProgressBar(); // ✅ agregado
             });
 
             taskList.appendChild(li);
             taskInput.value = '';
             toggleEmptyImage();
+            saveTasks();
+            updateProgressBar();
         }
     };
 
-    addTaskBtn.addEventListener('click', () => addTask());
+    // --- Cargar tareas guardadas ---
+    const loadTasks = () => {
+        const stored = JSON.parse(localStorage.getItem('tasks')) || [];
+        stored.forEach(task => addTask(task.text, task.completed));
+    };
+
+    // --- Eventos ---
+    addTaskBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        addTask();
+    });
+
     taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -74,5 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Inicializar ---
+    loadTasks();
     toggleEmptyImage();
+    updateProgressBar();
 });
