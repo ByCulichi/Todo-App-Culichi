@@ -37,40 +37,43 @@ body {
 }
 
 /* ============================================================
-    Tarjeta principal de la Todo App
+    Tarjeta principal de la Todo App - UI más grande y clara
    ============================================================ */
 .todo-app {
     width: 100%;
-    max-width: 400px;
-    padding: 2rem;
+    max-width: 450px; /* Tamaño ligeramente mayor */
+    padding: 2.5rem; /* Mayor padding */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 35px; /* Mayor espacio entre elementos */
     color: #fff;
-    border-radius: 20px;
-    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    border-radius: 25px; /* Bordes más redondeados */
+    box-shadow: 0 0 120px rgba(0, 0, 0, 0.6), 0 15px 35px rgba(0, 0, 0, 0.3); /* Sombras más suaves */
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
 }
 
 .todo-app h1 {
-    font-size: 2rem;
+    font-size: 2.4rem; /* Título más grande */
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================================
-    Sección de estadísticas y barra de progreso
+    Sección de estadísticas y barra de progreso - Mejorada
    ============================================================ */
 .stat-container {
-    padding: 15px 20px;
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.18);
+    padding: 20px 25px; /* Mayor padding */
+    border-radius: 15px; /* Bordes más redondeados */
+    border: 2px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
     width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
 }
 
 .details {
@@ -79,105 +82,147 @@ body {
 
 .details h3 {
     color: #fff;
+    font-size: 1.3rem; /* Texto más grande */
+    font-weight: 500;
+    margin-bottom: 15px; /* Mayor espacio */
+    text-align: center;
+    transition: all 0.3s ease; /* Transición suave para cambios de mensaje */
 }
 
-/* Barra de progreso visual */
+/* Barra de progreso visual - Más visible y atractiva */
 #progressbar {
     width: 100%;
-    height: 7px;
-    border-radius: 20px;
-    background: rgba(255, 194, 209, 0.3);
+    height: 12px; /* Mayor altura para mejor visibilidad */
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.15); /* Fondo más contrastante */
     overflow: hidden;
     position: relative;
     margin-top: 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra interna */
 }
 
-/* Indicador de progreso */
+/* Indicador de progreso - Con animación suave */
 #progress {
     height: 100%;
-    width: 50%; /* Este valor se actualiza dinámicamente */
-    background: #04fc57;
-    border-radius: 20px;
-    transition: width 0.3s ease;
+    width: 0%; /* Empezar en 0% */
+    background: linear-gradient(90deg, #04fc57, #00d547); /* Gradiente atractivo */
+    border-radius: 25px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Animación más suave */
+    position: relative;
+    box-shadow: 0 0 10px rgba(4, 252, 87, 0.4); /* Brillo suave */
+}
+
+/* Efecto de brillo en el progreso */
+#progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 2s infinite;
+    border-radius: 25px;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 /* ============================================================
-    Estadísticas numéricas de tareas
+    Estadísticas numéricas de tareas - Mejoradas
    ============================================================ */
 #numbers {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 194, 209, 0.3);
+    width: 90px; /* Ligeramente más grande */
+    height: 90px;
+    background: rgba(255, 194, 209, 0.4); /* Más opaco */
     font-weight: bold;
-    margin-top: 10px;
-    font-size: 1rem;
+    margin-top: 15px;
+    font-size: 1.2rem; /* Fuente más grande */
     border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(255, 194, 209, 0.2); /* Sombra suave */
+    transition: all 0.3s ease;
+}
+
+#numbers:hover {
+    transform: scale(1.05);
 }
 
 /* ============================================================
-    Área de entrada para agregar nuevas tareas
+    Área de entrada para agregar nuevas tareas - Mejorada
    ============================================================ */
 .input-area {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 15px; /* Mayor espacio entre input y botón */
 }
 
 .input-area input {
     flex: 1;
-    padding: 10px 17px;
-    font-size: 1.1rem;
+    padding: 15px 20px; /* Mayor padding */
+    font-size: 1.2rem; /* Fuente más grande */
     border: none;
     outline: none;
-    border-radius: 22px;
-    background: rgba(255, 194, 209, 0.3);
-    color: #dbdbdb;
+    border-radius: 25px; /* Más redondeado */
+    background: rgba(255, 255, 255, 0.1); /* Fondo más sutil */
+    color: #fff; /* Texto blanco */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.input-area input:focus {
+    border-color: #04fc57;
+    box-shadow: 0 0 20px rgba(4, 252, 87, 0.3);
+    transform: scale(1.02);
 }
 
 .input-area input::placeholder {
-    color: #bcbcbc;
+    color: rgba(255, 255, 255, 0.6);
 }
 
-/* Botón para agregar tarea */
+/* Botón para agregar tarea - Más grande y atractivo */
 .input-area button {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10px;
-    padding: 8px;
+    padding: 15px; /* Mayor padding */
     border-radius: 50%;
     color: #fff;
-    font-size: 1.1rem;
-    background: rgba(255, 194, 209, 0.3);
-    border: 2px solid rgba(255, 194, 209, 0.3);
+    font-size: 1.3rem; /* Icono más grande */
+    background: rgba(4, 252, 87, 0.8);
+    border: 2px solid rgba(4, 252, 87, 0.8);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(4, 252, 87, 0.3);
 }
 
 .input-area button:hover {
     transform: scale(1.1);
     background: #04fc57;
+    box-shadow: 0 6px 20px rgba(4, 252, 87, 0.4);
 }
 
 /* ============================================================
-    Contenedor de la lista de tareas y estado vacío
+    Contenedor de la lista de tareas y estado vacío - Mejorado
    ============================================================ */
 .todos-container {
     width: 100%;
-    max-height: 300px;
+    max-height: 350px; /* Mayor altura */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding-right: 10px;
+    gap: 20px; /* Mayor espacio */
+    padding-right: 15px;
 }
 
 /* ============================================================
-    Lista de tareas
+    Lista de tareas - UI más grande y clara
    ============================================================ */
 #task-list {
     width: 100%;
@@ -185,41 +230,46 @@ body {
 
 #task-list li {
     list-style: none;
-    background: rgba(255, 194, 209, 0.3);
-    padding: 8px 10px;
-    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1); /* Fondo más sutil */
+    padding: 15px 18px; /* Mayor padding */
+    border-radius: 20px; /* Más redondeado */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Fuente más grande */
     color: #fff;
-    margin-bottom: 10px;
+    margin-bottom: 15px; /* Mayor margen */
     position: relative;
-    transition: box-shadow 0.2s ease;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 #task-list li:hover {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 6px 25px rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* ============================================================
-    Checkbox personalizado para marcar tareas completadas
+    Checkbox personalizado para marcar tareas completadas - Mejorado
    ============================================================ */
 #task-list li .checkbox {
-    min-width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    min-width: 24px; /* Más grande */
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.4);
     background: transparent;
     border-radius: 50%;
     appearance: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 #task-list li .checkbox:checked {
     background: #04fc57;
     border-color: #04fc57;
     transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(4, 252, 87, 0.5);
 }
 
 #task-list li .checkbox:checked::before {
@@ -228,14 +278,16 @@ body {
     justify-content: center;
     align-items: center;
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Más grande */
+    font-weight: bold;
 }
 
-/* Texto de la tarea */
+/* Texto de la tarea - Mayor tamaño */
 #task-list li span {
     flex: 1;
-    margin: 0 10px;
+    margin: 0 15px; /* Mayor margen */
     word-wrap: break-word;
+    line-height: 1.4;
 }
 
 /* ============================================================
@@ -249,42 +301,55 @@ body {
 }
 
 /* ============================================================
-    Botones de edición y eliminación de tareas
+    Botones de edición y eliminación de tareas - Mejorados
    ============================================================ */
 .task-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px; /* Mayor espacio */
     margin-right: auto;
 }
 
 .task-buttons button {
-    background: rgba(255, 194, 209, 0.3);
+    background: rgba(255, 255, 255, 0.15);
     border: none;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 36px; /* Más grandes */
+    height: 36px;
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Ligeramente más grande */
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .task-buttons button:hover {
-    background: #ff4d6d;
-    transform: scale(1.2);
+    transform: scale(1.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Botón de edición */
+/* Botón de edición - Color azul */
 .task-buttons .edit-btn {
-    background: #1e90ff;
+    background: rgba(30, 144, 255, 0.8);
+    border: 2px solid rgba(30, 144, 255, 0.4);
 }
 
-/* Botón de eliminación */
+.task-buttons .edit-btn:hover {
+    background: #1e90ff;
+    border-color: #1e90ff;
+}
+
+/* Botón de eliminación - Color púrpura */
 .task-buttons .delete-btn {
+    background: rgba(178, 0, 248, 0.8);
+    border: 2px solid rgba(178, 0, 248, 0.4);
+}
+
+.task-buttons .delete-btn:hover {
     background: #b200f8;
+    border-color: #b200f8;
 }
 
 /* ============================================================
