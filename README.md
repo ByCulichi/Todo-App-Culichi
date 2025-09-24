@@ -1,3 +1,7 @@
+![Demo](./Todoapp.gif)
+
+...
+
 # 📝 ToDo App
 
 Task list (ToDo) app developed with **HTML, CSS, and JavaScript**.
