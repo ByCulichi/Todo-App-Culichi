@@ -1,56 +1,62 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
+    <!-- Metadatos y enlaces a estilos y fuentes -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
+    <!-- Iconos Font Awesome para botones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css" >
-
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
+    <!-- Contenedor principal de la aplicación -->
     <div class="container">
 
         <div class="todo-app">
-
+            <!-- Título principal -->
             <h1>Todo App</h1>
 
+            <!-- Sección de estadísticas y progreso -->
             <div class="stat-container">
                 <div class="details">
-                    <h3>Kepp it Up!</h3>
+                    <h3>Keep it Up!</h3>
+                    <!-- Barra de progreso visual -->
                     <div id="progressbar"></div>
+                    <!-- Texto de progreso -->
                     <div id="progress"></div>
                 </div>
             </div>
 
+            <!-- Estadísticas numéricas de tareas -->
             <div class="stats-number">
                 <p id="numbers">0 / 0</p>
             </div>
 
+            <!-- Área de entrada para agregar nuevas tareas -->
             <form class="input-area">
-
-
                 <input type="text" id="task-input" placeholder="Add a new task...">
-                <button type="submit" id="add-task-btn"><i class="fa-solid fa-plus"></i></button>
-                
+                <!-- Botón para agregar tarea, con icono -->
+                <button type="submit" id="add-task-btn">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
             </form>
             
+            <!-- Contenedor de la lista de tareas y estado vacío -->
             <div class="todos-container">
+                <!-- Lista de tareas -->
                 <ul id="task-list"></ul>
+                <!-- Imagen mostrada cuando no hay tareas -->
                 <img src="./images/empety.jpg" alt="empty" class="empty-image">
             </div>
-
         </div>
 
     </div>
 
-
+    <!-- Script principal para la lógica de la aplicación -->
     <script src="script.js"></script>
-
 </body>
 </html>
