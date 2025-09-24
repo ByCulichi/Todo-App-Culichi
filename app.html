@@ -2,29 +2,24 @@
 <html lang="en">
 
 <head>
-    <!-- Metadatos y enlaces a estilos y fuentes -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Tasks</title>
-    <!-- Iconos Font Awesome para botones -->
+    <title>Daily Tasks - Demo App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="task-styles.css">
 </head>
 
 <body>
-    <!-- Contenedor principal de la aplicación -->
     <div class="container">
-
         <div class="todo-app" id="main-app">
-            <!-- User header with logout -->
+            <!-- User header with demo user -->
             <div class="user-header">
                 <div class="user-info">
                     <i class="fas fa-user-circle"></i>
-                    <span id="user-name">Welcome!</span>
+                    <span id="user-name">Demo User</span>
                 </div>
-                <button class="logout-btn" id="logout-btn" title="Logout">
+                <button class="logout-btn" id="logout-btn" title="Go to Auth">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -35,7 +30,7 @@
             <!-- Sección de estadísticas y progreso -->
             <div class="stat-container">
                 <div class="details">
-                    <h3 id="progress-message">Keep it Up!</h3>
+                    <h3 id="progress-message">Add your first task!</h3>
                     <!-- Barra de progreso visual -->
                     <div id="progressbar">
                         <!-- Indicador de progreso dentro de la barra -->
@@ -151,11 +146,22 @@
                 </form>
             </div>
         </div>
-
     </div>
 
-    <!-- Scripts -->
-    <script src="auth.js"></script>
+    <!-- Demo Script -->
+    <script>
+        // Demo AuthManager for bypassing authentication
+        window.AuthManager = {
+            getCurrentUser: () => ({
+                id: 'demo-user',
+                name: 'Demo User',
+                email: 'demo@dailytasks.com'
+            }),
+            logout: () => {
+                window.location.href = 'auth.html';
+            }
+        };
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

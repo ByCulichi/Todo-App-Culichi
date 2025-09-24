@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth-styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="auth-container" id="login-screen">
+            <div class="auth-card">
+                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                <p class="auth-subtitle">Sign in to manage your tasks</p>
+                
+                <form class="auth-form" id="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="Email address" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                    
+                    <div class="auth-links">
+                        <a href="#" id="forgot-password-link">Forgot Password?</a>
+                        <a href="#" id="show-register">Create Account</a>
+                    </div>
+                </form>
+                
+                <div class="demo-info">
+                    <p><i class="fas fa-info-circle"></i> Demo: Use any email/password combination</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Screen -->
+        <div class="auth-container hidden" id="register-screen">
+            <div class="auth-card">
+                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                <p class="auth-subtitle">Create your account</p>
+                
+                <form class="auth-form" id="register-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="register-name" placeholder="Full Name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="register-email" placeholder="Email address" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-confirm" placeholder="Confirm Password" required>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                    
+                    <div class="auth-links">
+                        <a href="#" id="show-login">Already have an account? Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Password Recovery Screen -->
+        <div class="auth-container hidden" id="recovery-screen">
+            <div class="auth-card">
+                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                <p class="auth-subtitle">Reset your password</p>
+                
+                <form class="auth-form" id="recovery-form">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="recovery-email" placeholder="Enter your email address" required>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Reset Link
+                    </button>
+                    
+                    <div class="auth-links">
+                        <a href="#" id="back-to-login">Back to Sign In</a>
+                    </div>
+                </form>
+                
+                <div class="demo-info">
+                    <p><i class="fas fa-info-circle"></i> Demo: Password reset simulation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

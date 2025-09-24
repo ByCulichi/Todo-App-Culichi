@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks - Demo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .demo-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            max-width: 600px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-container p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .demo-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .demo-btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .demo-btn.primary {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+        
+        .demo-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .features h3 {
+            color: #4facfe;
+            margin-bottom: 15px;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4facfe;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎯 Daily Tasks</h1>
+        <p>A modern, feature-rich task management application with user authentication and enhanced productivity features.</p>
+        
+        <div class="demo-links">
+            <a href="auth.html" class="demo-btn primary">
+                🚀 Launch Application
+            </a>
+            <a href="app.html" class="demo-btn secondary">
+                📱 Direct to App (Demo)
+            </a>
+        </div>
+        
+        <div class="features">
+            <h3>✨ Key Features</h3>
+            <ul>
+                <li><strong>User Authentication:</strong> Secure login, registration, and password recovery</li>
+                <li><strong>Organized Tasks:</strong> Separate pending and completed task sections</li>
+                <li><strong>Enhanced Creation:</strong> Add tasks with names, dates, and emoji categories</li>
+                <li><strong>Dark Theme:</strong> Beautiful, modern dark interface design</li>
+                <li><strong>User-Specific Data:</strong> Personal task storage for each user</li>
+                <li><strong>Progress Tracking:</strong> Visual progress bars and completion statistics</li>
+                <li><strong>Responsive Design:</strong> Works perfectly on desktop and mobile</li>
+                <li><strong>Floating Actions:</strong> Intuitive task creation with floating + button</li>
+            </ul>
+        </div>
+        
+        <p style="font-size: 0.9rem; opacity: 0.7;">
+            💡 <strong>Demo Mode:</strong> Use any email/password combination for testing. 
+            Data is stored locally in your browser.
+        </p>
+    </div>
+</body>
+</html>
