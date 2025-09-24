@@ -449,6 +449,11 @@ class DailyTasksApp {
             console.log('Using demo weather data');
             this.weatherData = this.getFallbackWeatherData();
         }
+        
+        // Ensure weather data is always set
+        if (!this.weatherData) {
+            this.weatherData = this.getFallbackWeatherData();
+        }
     }
 
     getUserLocation() {
