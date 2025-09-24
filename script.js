@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const todosContainer = document.querySelector('.todos-container');
     const progressBar = document.getElementById('progress');
     const progressNumbers = document.getElementById('numbers');
+    const progressMessage = document.getElementById('progress-message'); // Nuevo elemento para mensajes dinámicos
 
     // ============================================================
     // Función: Mostrar u ocultar la imagen de "sin tareas"
@@ -60,19 +61,57 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ============================================================
-    // Función: Actualizar barra y números de progreso
+    // Función: Actualizar barra de progreso dinámica y mensajes
     // ============================================================
     const updateProgressBar = () => {
         const totalTasks = taskList.children.length;
         const completedTasks = taskList.querySelectorAll('.checkbox:checked').length;
 
-        progressBar.style.width = totalTasks === 0 ? '0%' : `${(completedTasks / totalTasks) * 100}%`;
+        // Calcular porcentaje de progreso
+        const progressPercentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+        
+        // Actualizar barra de progreso con animación suave
+        progressBar.style.width = `${progressPercentage}%`;
+        
+        // Actualizar números de progreso
         progressNumbers.textContent = totalTasks === 0 ? '0/0' : `${completedTasks}/${totalTasks}`;
         
-        // Mostrar animación si todas las tareas están completadas
-        if (totalTasks > 0 && completedTasks === totalTasks) {
+        // ============================================================
+        // Lógica de mensajes dinámicos según el estado de las tareas
+        // ============================================================
+        if (totalTasks === 0) {
+            // No hay tareas
+            progressMessage.textContent = 'Add your first task!';
+            progressMessage.style.color = '#fff';
+        } else if (completedTasks === totalTasks) {
+            // Todas las tareas completadas - Mensaje especial
+            progressMessage.innerHTML = '¡Felicidades, completaste todas tus tareas! 🎉';
+            progressMessage.style.color = '#04fc57';
+            progressMessage.style.textShadow = '0 0 10px rgba(4, 252, 87, 0.5)';
+            
+            // Mostrar animación de confeti
             showCompletionAnimation();
+        } else if (completedTasks === 0) {
+            // No hay tareas completadas
+            progressMessage.textContent = `Tienes ${totalTasks} tarea${totalTasks > 1 ? 's' : ''} pendiente${totalTasks > 1 ? 's' : ''}`;
+            progressMessage.style.color = '#fff';
+            progressMessage.style.textShadow = 'none';
+        } else {
+            // Progreso parcial
+            const pendingTasks = totalTasks - completedTasks;
+            progressMessage.textContent = `¡Vas bien! Te quedan ${pendingTasks} tarea${pendingTasks > 1 ? 's' : ''}`;
+            progressMessage.style.color = '#fff';
+            progressMessage.style.textShadow = 'none';
         }
+        
+        // ============================================================
+        // Guardar progreso en localStorage para persistencia
+        // ============================================================
+        localStorage.setItem('todoProgress', JSON.stringify({
+            total: totalTasks,
+            completed: completedTasks,
+            percentage: progressPercentage
+        }));
     };
 
     // ============================================================
