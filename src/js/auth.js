@@ -144,36 +144,78 @@ class AuthManager {
         this.clearMessages();
     }
 
+    /**
+     * showMessage - Muestra mensajes de error o éxito al usuario
+     * 
+     * @param {string} message - El mensaje a mostrar
+     * @param {string} type - Tipo de mensaje: 'error' (rojo) o 'success' (verde)
+     * 
+     * Conceptos clave:
+     * - createElement() = crear nuevos elementos HTML
+     * - innerHTML = contenido HTML interno de un elemento
+     * - querySelector = buscar UN elemento con selector CSS
+     * - insertBefore = insertar elemento antes de otro
+     */
     showMessage(message, type = 'error') {
-        this.clearMessages();
+        this.clearMessages(); // Limpiar mensajes anteriores
         
+        // Crear nuevo div para el mensaje
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}`;
+        messageDiv.className = `message ${type}`; // Agregar clases CSS
+        
+        // Contenido HTML con icono y mensaje
         messageDiv.innerHTML = `
             <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i>
             ${message}
         `;
 
-        // Insert at the beginning of the active form
+        // Buscar el formulario activo (que no está oculto)
         const activeForm = document.querySelector('.auth-container:not(.hidden) .auth-form');
+        // Insertar mensaje al inicio del formulario
         activeForm.insertBefore(messageDiv, activeForm.firstChild);
     }
 
+    /**
+     * clearMessages - Elimina todos los mensajes visibles
+     * 
+     * Concepto clave:
+     * - querySelectorAll = busca TODOS los elementos que coincidan
+     * - forEach = ejecuta una función para cada elemento encontrado
+     * - remove() = elimina el elemento del DOM
+     */
     clearMessages() {
         document.querySelectorAll('.message').forEach(msg => msg.remove());
     }
 
+    /**
+     * handleLogin - Procesa el intento de inicio de sesión
+     * 
+     * Este método hace lo siguiente:
+     * 1. Obtiene email y contraseña del formulario
+     * 2. Valida que los datos sean correctos
+     * 3. Busca el usuario en la lista de usuarios registrados
+     * 4. Si encuentra coincidencia, crea sesión y redirige
+     * 5. Si no, muestra mensaje de error
+     * 
+     * Conceptos clave:
+     * - async/await = para operaciones que toman tiempo
+     * - trim() = quita espacios al inicio y final del texto  
+     * - find() = busca un elemento en array que cumpla condición
+     */
     async handleLogin() {
+        // Obtener valores de los campos del formulario
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
+        // Validación 1: Verificar que el email sea válido
         if (!this.validateEmail(email)) {
-            this.showMessage('Please enter a valid email address');
-            return;
+            this.showMessage('Por favor ingresa un email válido');
+            return; // Salir de la función si hay error
         }
 
+        // Validación 2: Verificar longitud mínima de contraseña
         if (password.length < 6) {
-            this.showMessage('Password must be at least 6 characters');
+            this.showMessage('La contraseña debe tener al menos 6 caracteres');
             return;
         }
 

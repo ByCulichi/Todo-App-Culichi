@@ -1,35 +1,67 @@
 // ============================================================
-// Daily Tasks App - Enhanced with Authentication
+// Aplicación Daily Tasks - Mejorada con Autenticación
 // ============================================================
 
+/**
+ * Clase DailyTasksApp - Maneja toda la funcionalidad de gestión de tareas
+ * 
+ * Esta clase es responsable de:
+ * - Gestionar tareas del usuario (crear, completar, eliminar)
+ * - Actualizar la interfaz en tiempo real
+ * - Guardar datos en localStorage
+ * - Mostrar estadísticas y progreso
+ * - Manejar animaciones y efectos visuales
+ * 
+ * Para principiantes:
+ * - Una clase organiza código relacionado en un solo lugar
+ * - Los métodos son funciones que pertenecen a la clase
+ * - 'this' se refiere a la instancia actual de la clase
+ */
 class DailyTasksApp {
+    /**
+     * Constructor - Se ejecuta automáticamente al crear nueva instancia
+     */
     constructor() {
+        // currentUser: información del usuario logueado
         this.currentUser = null;
+        
+        // tasks: array que almacena todas las tareas del usuario
         this.tasks = [];
+        
+        // Inicializar la aplicación
         this.init();
     }
 
+    /**
+     * init - Inicializa toda la aplicación
+     * 
+     * Pasos que realiza:
+     * 1. Verifica que el usuario esté autenticado
+     * 2. Si no lo está, redirige a página de login
+     * 3. Inicializa elementos del DOM
+     * 4. Configura event listeners (botones, formularios)
+     * 5. Carga tareas guardadas del usuario
+     * 6. Actualiza la interfaz con datos actuales
+     */
     init() {
-        // Check authentication
+        // Verificar autenticación - obtener usuario actual
         this.currentUser = AuthManager.getCurrentUser();
+        
+        // Si no hay usuario logueado, redirigir a auth.html
         if (!this.currentUser) {
             window.location.href = 'auth.html';
-            return;
+            return; // Salir de la función
         }
 
-        // Initialize DOM elements
-        this.initializeElements();
+        // Configurar la aplicación paso a paso
+        this.initializeElements();  // Cachear elementos DOM
+        this.setupEventListeners(); // Configurar botones y eventos
+        this.loadUserTasks();       // Cargar tareas del localStorage
         
-        // Setup event listeners
-        this.setupEventListeners();
-        
-        // Load user data
-        this.loadUserTasks();
-        
-        // Update UI
-        this.updateUserDisplay();
-        this.updateTaskCounts();
-        this.updateEmptyState();
+        // Actualizar interfaz con datos cargados
+        this.updateUserDisplay();   // Mostrar nombre del usuario
+        this.updateTaskCounts();    // Actualizar contadores
+        this.updateEmptyState();    // Mostrar/ocultar mensaje vacío
     }
 
     initializeElements() {

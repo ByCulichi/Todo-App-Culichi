@@ -1,8 +1,14 @@
 # 🎯 Daily Tasks - Aplicación de Gestión de Tareas
 
-![Demo](./images/Todoapp.gif)
+![Demo Desktop](./images/Todoapp.gif)
 
 Una aplicación moderna y completa para la gestión de tareas diarias con sistema de autenticación, desarrollada con **HTML5, CSS3 y JavaScript Vanilla**. Perfecta para aprender desarrollo web o como base para proyectos más avanzados.
+
+## 📱 Vista Móvil
+
+<img src="https://github.com/user-attachments/assets/42ed17fe-04a5-4597-88ac-d88dfa2dab0b" alt="Mobile View" width="300">
+
+*La aplicación es completamente responsive y funciona perfectamente en dispositivos móviles.*
 
 ## ✨ Características Principales
 
