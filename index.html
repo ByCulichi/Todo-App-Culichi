@@ -5,20 +5,32 @@
     <!-- Metadatos y enlaces a estilos y fuentes -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>Daily Tasks</title>
     <!-- Iconos Font Awesome para botones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="task-styles.css">
 </head>
 
 <body>
     <!-- Contenedor principal de la aplicación -->
     <div class="container">
 
-        <div class="todo-app">
+        <div class="todo-app" id="main-app">
+            <!-- User header with logout -->
+            <div class="user-header">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-name">Welcome!</span>
+                </div>
+                <button class="logout-btn" id="logout-btn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+
             <!-- Título principal -->
-            <h1>Todo App</h1>
+            <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
 
             <!-- Sección de estadísticas y progreso -->
             <div class="stat-container">
@@ -37,27 +49,113 @@
                 <p id="numbers">0 / 0</p>
             </div>
 
-            <!-- Área de entrada para agregar nuevas tareas -->
-            <form class="input-area">
-                <input type="text" id="task-input" placeholder="Add a new task...">
-                <!-- Botón para agregar tarea, con icono -->
-                <button type="submit" id="add-task-btn">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </form>
+            <!-- Área de entrada para agregar nuevas tareas - Ahora será un botón flotante -->
+            <button class="floating-add-btn" id="floating-add-btn" title="Add new task">
+                <i class="fa-solid fa-plus"></i>
+            </button>
             
-            <!-- Contenedor de la lista de tareas y estado vacío -->
-            <div class="todos-container">
-                <!-- Lista de tareas -->
-                <ul id="task-list"></ul>
+            <!-- Contenedor de la lista de tareas organizada -->
+            <div class="tasks-organized">
+                <!-- Tareas Pendientes -->
+                <div class="task-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-clock"></i>
+                        Pending Tasks
+                        <span class="task-count" id="pending-count">0</span>
+                    </h2>
+                    <ul id="pending-tasks" class="task-list"></ul>
+                </div>
+
+                <!-- Tareas Completadas -->
+                <div class="task-section">
+                    <h2 class="section-title completed">
+                        <i class="fas fa-check-circle"></i>
+                        Completed Tasks
+                        <span class="task-count" id="completed-count">0</span>
+                    </h2>
+                    <ul id="completed-tasks" class="task-list"></ul>
+                </div>
+
                 <!-- Imagen mostrada cuando no hay tareas -->
-                <img src="./images/empety.jpg" alt="empty" class="empty-image">
+                <div class="empty-state" id="empty-state">
+                    <img src="./images/empety.jpg" alt="empty" class="empty-image">
+                    <p>No tasks yet. Click the + button to add your first task!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para agregar nueva tarea -->
+        <div class="task-modal hidden" id="task-modal">
+            <div class="modal-overlay" id="modal-overlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Task</h2>
+                    <button class="close-modal" id="close-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form class="task-form" id="task-form">
+                    <div class="form-group">
+                        <label for="task-name">
+                            <i class="fas fa-edit"></i>
+                            Task Name
+                        </label>
+                        <input type="text" id="task-name" placeholder="Enter task name..." required maxlength="100">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-date">
+                                <i class="fas fa-calendar"></i>
+                                Date
+                            </label>
+                            <input type="date" id="task-date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-emoji">
+                                <i class="fas fa-smile"></i>
+                                Emoji (Optional)
+                            </label>
+                            <select id="task-emoji">
+                                <option value="">No emoji</option>
+                                <option value="📝">📝 Notes</option>
+                                <option value="💼">💼 Work</option>
+                                <option value="🏠">🏠 Home</option>
+                                <option value="🛒">🛒 Shopping</option>
+                                <option value="💪">💪 Exercise</option>
+                                <option value="📚">📚 Study</option>
+                                <option value="🎯">🎯 Goal</option>
+                                <option value="⭐">⭐ Important</option>
+                                <option value="🔥">🔥 Urgent</option>
+                                <option value="💡">💡 Ideas</option>
+                                <option value="📞">📞 Call</option>
+                                <option value="✈️">✈️ Travel</option>
+                                <option value="🎉">🎉 Fun</option>
+                                <option value="❤️">❤️ Personal</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-task">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Create Task
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
     </div>
 
-    <!-- Script principal para la lógica de la aplicación -->
+    <!-- Scripts -->
+    <script src="auth.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
