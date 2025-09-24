@@ -6,6 +6,7 @@ class DailyTasksApp {
     constructor() {
         this.currentUser = null;
         this.tasks = [];
+        this.weatherData = null;
         this.init();
     }
 
@@ -25,6 +26,9 @@ class DailyTasksApp {
         
         // Load user data
         this.loadUserTasks();
+        
+        // Initialize weather and dynamic background
+        this.initWeatherBackground();
         
         // Update UI
         this.updateUserDisplay();
@@ -414,6 +418,230 @@ class DailyTasksApp {
         }, 3000);
     }
 
+    // Weather and dynamic background system
+    async initWeatherBackground() {
+        await this.getWeatherData();
+        this.setWeatherBasedBackground();
+        this.createWeatherWidget();
+        this.addWeatherParticles();
+    }
+
+    async getWeatherData() {
+        try {
+            // Get user's location
+            const position = await this.getUserLocation();
+            
+            // Use OpenWeatherMap API (free tier)
+            const API_KEY = '8b8c3f4b5bb8e9c2e6b2c3d4e5f6a7b8'; // Demo key - replace with real one
+            const { latitude, longitude } = position.coords;
+            
+            const response = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+            );
+            
+            if (response.ok) {
+                this.weatherData = await response.json();
+            } else {
+                // Fallback weather data for demo
+                this.weatherData = this.getFallbackWeatherData();
+            }
+        } catch (error) {
+            console.log('Using demo weather data');
+            this.weatherData = this.getFallbackWeatherData();
+        }
+    }
+
+    getUserLocation() {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(new Error('Geolocation not supported'));
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                resolve,
+                () => reject(new Error('Location access denied')),
+                { timeout: 10000 }
+            );
+        });
+    }
+
+    getFallbackWeatherData() {
+        const weatherTypes = ['clear', 'clouds', 'rain', 'snow', 'thunder'];
+        const randomWeather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        
+        return {
+            weather: [{ main: randomWeather, description: `${randomWeather} sky` }],
+            main: { temp: 22, feels_like: 25 },
+            name: 'Demo City',
+            sys: { sunrise: Date.now()/1000 - 3600, sunset: Date.now()/1000 + 3600 }
+        };
+    }
+
+    setWeatherBasedBackground() {
+        if (!this.weatherData) return;
+
+        const body = document.body;
+        const weatherMain = this.weatherData.weather[0].main.toLowerCase();
+        const isNight = this.isNightTime();
+        
+        // Remove existing weather classes
+        body.classList.remove('weather-clear', 'weather-clouds', 'weather-rain', 'weather-snow', 'weather-thunder', 'weather-night');
+        
+        if (isNight) {
+            body.classList.add('weather-night');
+        } else {
+            switch (weatherMain) {
+                case 'clear':
+                    body.classList.add('weather-clear');
+                    break;
+                case 'clouds':
+                    body.classList.add('weather-clouds');
+                    break;
+                case 'rain':
+                case 'drizzle':
+                    body.classList.add('weather-rain');
+                    break;
+                case 'snow':
+                    body.classList.add('weather-snow');
+                    break;
+                case 'thunderstorm':
+                    body.classList.add('weather-thunder');
+                    break;
+                default:
+                    body.classList.add('weather-clouds');
+            }
+        }
+    }
+
+    isNightTime() {
+        if (!this.weatherData.sys) return false;
+        
+        const now = Date.now() / 1000;
+        const sunrise = this.weatherData.sys.sunrise;
+        const sunset = this.weatherData.sys.sunset;
+        
+        return now < sunrise || now > sunset;
+    }
+
+    createWeatherWidget() {
+        if (!this.weatherData) return;
+
+        // Find or create weather widget container
+        let weatherWidget = document.getElementById('weather-widget');
+        if (!weatherWidget) {
+            weatherWidget = document.createElement('div');
+            weatherWidget.id = 'weather-widget';
+            weatherWidget.className = 'weather-widget';
+            
+            // Insert after the user header
+            const userHeader = document.querySelector('.user-header');
+            if (userHeader) {
+                userHeader.insertAdjacentElement('afterend', weatherWidget);
+            }
+        }
+
+        const temp = Math.round(this.weatherData.main.temp);
+        const weather = this.weatherData.weather[0].main;
+        const description = this.weatherData.weather[0].description;
+        const city = this.weatherData.name;
+
+        const weatherIcons = {
+            'clear': '☀️',
+            'clouds': '☁️',
+            'rain': '🌧️',
+            'drizzle': '🌦️',
+            'snow': '❄️',
+            'thunderstorm': '⛈️',
+            'mist': '🌫️',
+            'fog': '🌫️'
+        };
+
+        weatherWidget.innerHTML = `
+            <div class="weather-info">
+                <span class="weather-icon">${weatherIcons[weather.toLowerCase()] || '☁️'}</span>
+                <div class="weather-details">
+                    <span class="temperature">${temp}°C</span>
+                    <span class="weather-desc">${description}</span>
+                </div>
+                <span class="location">${city}</span>
+            </div>
+            <div class="weather-controls">
+                <button class="weather-toggle" onclick="window.todoApp.toggleWeather()" title="Change Weather">
+                    🔄
+                </button>
+            </div>
+        `;
+    }
+
+    // Manual weather toggle for demonstration
+    toggleWeather() {
+        const weatherTypes = ['clear', 'clouds', 'rain', 'snow', 'thunder'];
+        const currentIndex = weatherTypes.findIndex(type => 
+            document.body.classList.contains(`weather-${type}`)
+        );
+        const nextIndex = (currentIndex + 1) % weatherTypes.length;
+        const nextWeather = weatherTypes[nextIndex];
+
+        // Update weather data
+        this.weatherData.weather[0].main = nextWeather;
+        this.weatherData.weather[0].description = `${nextWeather} sky`;
+
+        // Update background and particles
+        this.setWeatherBasedBackground();
+        this.createWeatherWidget();
+        this.addWeatherParticles();
+    }
+
+    addWeatherParticles() {
+        if (!this.weatherData) return;
+
+        const weatherMain = this.weatherData.weather[0].main.toLowerCase();
+        
+        // Remove existing particles
+        const existingParticles = document.querySelector('.weather-particles');
+        if (existingParticles) {
+            existingParticles.remove();
+        }
+
+        const particleContainer = document.createElement('div');
+        particleContainer.className = 'weather-particles';
+        document.body.appendChild(particleContainer);
+
+        switch (weatherMain) {
+            case 'rain':
+            case 'drizzle':
+                this.createRainParticles(particleContainer);
+                break;
+            case 'snow':
+                this.createSnowParticles(particleContainer);
+                break;
+        }
+    }
+
+    createRainParticles(container) {
+        for (let i = 0; i < 50; i++) {
+            const raindrop = document.createElement('div');
+            raindrop.className = 'raindrop';
+            raindrop.style.left = `${Math.random() * 100}vw`;
+            raindrop.style.animationDelay = `${Math.random() * 2}s`;
+            raindrop.style.animationDuration = `${0.5 + Math.random() * 0.5}s`;
+            container.appendChild(raindrop);
+        }
+    }
+
+    createSnowParticles(container) {
+        for (let i = 0; i < 30; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            snowflake.style.animationDelay = `${Math.random() * 3}s`;
+            snowflake.style.animationDuration = `${3 + Math.random() * 2}s`;
+            snowflake.innerHTML = '❄';
+            container.appendChild(snowflake);
+        }
+    }
+
     // Data persistence methods
     saveUserTasks() {
         const userData = {
@@ -448,5 +676,5 @@ class DailyTasksApp {
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new DailyTasksApp();
+    window.todoApp = new DailyTasksApp();
 });

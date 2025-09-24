@@ -419,6 +419,20 @@
     color: #fff;
     font-size: 1rem;
     transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Enhanced select styling */
+.form-group select option {
+    background: rgba(45, 52, 54, 0.95);
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 1rem;
+}
+
+.form-group select option:hover,
+.form-group select option:checked {
+    background: rgba(4, 252, 87, 0.2);
 }
 
 .form-group input:focus,

@@ -22,6 +22,35 @@ body {
     align-items: center;
     min-height: 100vh;
     background: url(./images/background-image.jpg) no-repeat center center/cover;
+    transition: all 0.8s ease;
+    position: relative;
+}
+
+/* ============================================================
+    Dynamic Weather-Based Backgrounds
+   ============================================================ */
+body.weather-clear {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #ffeaa7 100%);
+}
+
+body.weather-clouds {
+    background: linear-gradient(135deg, #636e72 0%, #74b9ff 50%, #ddd 100%);
+}
+
+body.weather-rain {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%);
+}
+
+body.weather-snow {
+    background: linear-gradient(135deg, #74b9ff 0%, #ffffff 50%, #ddd 100%);
+}
+
+body.weather-thunder {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 30%, #6c5ce7 100%);
+}
+
+body.weather-night {
+    background: linear-gradient(135deg, #2d3436 0%, #000000 50%, #636e72 100%);
 }
 
 /* ============================================================
@@ -371,5 +400,177 @@ body {
     100% {
         transform: translateY(100vh) rotate(720deg);
         opacity: 0;
+    }
+}
+
+/* ============================================================
+    Weather Widget Styles
+   ============================================================ */
+.weather-widget {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    z-index: 100;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.weather-icon {
+    font-size: 1.5rem;
+}
+
+.weather-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.temperature {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.weather-desc {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-transform: capitalize;
+}
+
+.location {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-left: auto;
+}
+
+.weather-controls {
+    display: flex;
+    justify-content: center;
+}
+
+.weather-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.weather-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* ============================================================
+    Weather Particles and Animations
+   ============================================================ */
+.weather-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Rain particles */
+.raindrop {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
+    animation: rain-fall linear infinite;
+    border-radius: 50%;
+}
+
+@keyframes rain-fall {
+    0% {
+        transform: translateY(-100vh);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0.3;
+    }
+}
+
+/* Snow particles */
+.snowflake {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.8);
+    user-select: none;
+    pointer-events: none;
+    animation: snow-fall linear infinite;
+    font-size: 1rem;
+}
+
+@keyframes snow-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Enhanced UI animations and effects */
+.todo-app {
+    animation: app-fade-in 0.8s ease-out;
+}
+
+@keyframes app-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive design for weather widget */
+@media (max-width: 768px) {
+    .weather-widget {
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .weather-info {
+        gap: 8px;
+    }
+    
+    .weather-icon {
+        font-size: 1.2rem;
+    }
+    
+    .temperature {
+        font-size: 1rem;
     }
 }
