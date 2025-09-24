@@ -1,79 +1,146 @@
 // ============================================================
-// Authentication System - Daily Tasks
+// Sistema de Autenticación - Daily Tasks
 // ============================================================
 
+/**
+ * Clase AuthManager - Maneja toda la autenticación de usuarios
+ * 
+ * Esta clase es responsable de:
+ * - Iniciar sesión de usuarios
+ * - Registrar nuevos usuarios  
+ * - Recuperación de contraseñas
+ * - Gestionar sesiones activas
+ * - Validar datos de entrada
+ * 
+ * Para principiantes:
+ * - Una clase es como un molde para crear objetos
+ * - Los métodos son funciones dentro de una clase
+ * - 'this' se refiere al objeto actual de la clase
+ */
 class AuthManager {
+    /**
+     * Constructor - Se ejecuta cuando se crea una nueva instancia de AuthManager
+     * Aquí inicializamos las propiedades (variables) de la clase
+     */
     constructor() {
+        // currentUser: almacena información del usuario que está logueado
         this.currentUser = null;
+        
+        // users: obtiene la lista de usuarios guardados en localStorage
+        // localStorage es como una "base de datos" en el navegador
+        // JSON.parse convierte texto en objeto JavaScript
         this.users = JSON.parse(localStorage.getItem('dailyTasks_users') || '[]');
+        
+        // Inicializar la aplicación
         this.init();
     }
 
+    /**
+     * Método init - Inicializa la aplicación de autenticación
+     * 
+     * Este método:
+     * 1. Verifica si hay una sesión activa guardada
+     * 2. Si la sesión es válida, redirige a la app principal
+     * 3. Si no hay sesión, configura los eventos y muestra login
+     */
     init() {
-        // Check if user is already logged in
+        // Verificar si el usuario ya está logueado
+        // localStorage.getItem busca un dato guardado por su nombre
         const savedSession = localStorage.getItem('dailyTasks_session');
+        
         if (savedSession) {
+            // JSON.parse convierte el texto guardado de vuelta a objeto
             const sessionData = JSON.parse(savedSession);
+            
+            // Verificar si la sesión aún es válida
             if (this.isValidSession(sessionData)) {
                 this.currentUser = sessionData.user;
-                this.redirectToApp();
-                return;
+                this.redirectToApp(); // Ir directamente a la aplicación
+                return; // Salir de la función aquí
             }
         }
 
-        this.setupEventListeners();
-        this.showScreen('login');
+        // Si no hay sesión válida, configurar la página de login
+        this.setupEventListeners(); // Configurar botones y formularios
+        this.showScreen('login');   // Mostrar pantalla de login
     }
 
+    /**
+     * setupEventListeners - Configura todos los eventos (clics, envío de formularios)
+     * 
+     * ¿Qué son los Event Listeners?
+     * - Son "escuchadores" que esperan acciones del usuario (click, submit, etc.)
+     * - Cuando ocurre la acción, ejecutan una función
+     * - addEventListener('click', función) = "cuando hagan click, ejecuta esta función"
+     */
     setupEventListeners() {
-        // Navigation between screens
+        // Navegación entre pantallas (login, registro, recuperación)
+        
+        // Botón "Crear cuenta" - va de login a registro
         document.getElementById('show-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showScreen('register');
+            e.preventDefault(); // Evita que el enlace recargue la página
+            this.showScreen('register'); // Cambia a pantalla de registro
         });
 
+        // Botón "Ya tengo cuenta" - va de registro a login  
         document.getElementById('show-login').addEventListener('click', (e) => {
             e.preventDefault();
             this.showScreen('login');
         });
 
+        // Enlace "¿Olvidaste tu contraseña?" - va a recuperación
         document.getElementById('forgot-password-link').addEventListener('click', (e) => {
             e.preventDefault();
             this.showScreen('recovery');
         });
 
+        // Botón "Volver al login" - regresa desde recuperación
         document.getElementById('back-to-login').addEventListener('click', (e) => {
             e.preventDefault();
             this.showScreen('login');
         });
 
-        // Form submissions
+        // Envío de formularios
+        // 'submit' se activa cuando se envía un formulario (botón submit o Enter)
+        
         document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleLogin();
+            e.preventDefault(); // Evita que la página se recargue
+            this.handleLogin(); // Procesa el login
         });
 
         document.getElementById('register-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.handleRegister();
+            this.handleRegister(); // Procesa el registro
         });
 
         document.getElementById('recovery-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.handlePasswordRecovery();
+            this.handlePasswordRecovery(); // Procesa la recuperación
         });
     }
 
+    /**
+     * showScreen - Cambia entre diferentes pantallas (login, registro, recuperación)
+     * 
+     * @param {string} screenName - Nombre de la pantalla a mostrar ('login', 'register', 'recovery')
+     * 
+     * Concepto clave: Manipulación del DOM
+     * - DOM = Document Object Model = estructura HTML de la página
+     * - classList.add/remove = agregar/quitar clases CSS
+     * - querySelector = buscar elementos en la página
+     */
     showScreen(screenName) {
-        // Hide all screens
+        // Ocultar todas las pantallas agregándoles la clase 'hidden'
+        // querySelectorAll encuentra TODOS los elementos con esa clase
         document.querySelectorAll('.auth-container').forEach(screen => {
-            screen.classList.add('hidden');
+            screen.classList.add('hidden'); // Agrega la clase 'hidden' para ocultar
         });
 
-        // Show selected screen
+        // Mostrar solo la pantalla seleccionada quitándole 'hidden'
+        // getElementById busca UN elemento por su ID único
         document.getElementById(`${screenName}-screen`).classList.remove('hidden');
 
-        // Clear any messages
+        // Limpiar mensajes de error/éxito anteriores
         this.clearMessages();
     }
 

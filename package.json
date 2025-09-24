@@ -1,0 +1,60 @@
+{
+  "name": "daily-tasks-culichi",
+  "version": "2.0.0",
+  "description": "Una aplicación moderna de gestión de tareas diarias con sistema de autenticación completo",
+  "main": "demo.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "serve": "python -m http.server 3000",
+    "dev": "python -m http.server 3000",
+    "format": "prettier --write .",
+    "format-check": "prettier --check ."
+  },
+  "keywords": [
+    "todo",
+    "tasks",
+    "javascript",
+    "html",
+    "css",
+    "vanilla-js",
+    "task-manager",
+    "productivity",
+    "authentication",
+    "responsive",
+    "dark-theme"
+  ],
+  "author": {
+    "name": "ByCulichi",
+    "url": "https://github.com/ByCulichi"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ByCulichi/Todo-App-Culichi#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ByCulichi/Todo-App-Culichi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ByCulichi/Todo-App-Culichi/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie <= 11"
+  ],
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false
+  }
+}
