@@ -1,576 +1,590 @@
-/* ============================================================
+    /* ============================================================
+    style.css
+    ============================================================
+    Este archivo contiene los estilos principales para la aplicación Daily Tasks.
+    Aquí se definen los colores, fuentes, fondos dinámicos, animaciones,
+    diseño responsivo y la apariencia general de la interfaz.
+    Incluye estilos para la tarjeta principal, listas de tareas, botones,
+    barra de progreso, widget del clima y efectos visuales.
+    ============================================================ */
+
+    /* ============================================================
     Importación de fuentes externas para mejorar la tipografía
-   ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,200;0,400;0,500;0,600;0,700;1,600&display=swap');
+    ============================================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,200;0,400;0,500;0,600;0,700;1,600&display=swap');
 
-/* ============================================================
+    /* ============================================================
     Reset de estilos y configuración global
-   ============================================================ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    Elimina márgenes y paddings por defecto y ajusta el box-sizing.
+    ============================================================ */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-/* ============================================================
+    /* ============================================================
     Estilos generales del body y fondo de la app
-   ============================================================ */
-body {
-    font-family: "Jost", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: url(./images/background-image.jpg) no-repeat center center/cover;
-    transition: all 0.8s ease;
-    position: relative;
-}
-
-/* ============================================================
-    Dynamic Weather-Based Backgrounds
-   ============================================================ */
-body.weather-clear {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #ffeaa7 100%);
-}
-
-body.weather-clouds {
-    background: linear-gradient(135deg, #636e72 0%, #74b9ff 50%, #ddd 100%);
-}
-
-body.weather-rain {
-    background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%);
-}
-
-body.weather-snow {
-    background: linear-gradient(135deg, #74b9ff 0%, #ffffff 50%, #ddd 100%);
-}
-
-body.weather-thunder {
-    background: linear-gradient(135deg, #2d3436 0%, #636e72 30%, #6c5ce7 100%);
-}
-
-body.weather-night {
-    background: linear-gradient(135deg, #2d3436 0%, #000000 50%, #636e72 100%);
-}
-
-/* ============================================================
-    Contenedor principal centrado
-   ============================================================ */
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0 20px;
-}
-
-/* ============================================================
-    Tarjeta principal de la Todo App - UI más grande y clara
-   ============================================================ */
-.todo-app {
-    width: 100%;
-    max-width: 450px; /* Tamaño ligeramente mayor */
-    padding: 2.5rem; /* Mayor padding */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 35px; /* Mayor espacio entre elementos */
-    color: #fff;
-    border-radius: 25px; /* Bordes más redondeados */
-    box-shadow: 0 0 120px rgba(0, 0, 0, 0.6), 0 15px 35px rgba(0, 0, 0, 0.3); /* Sombras más suaves */
-    border: 3px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-}
-
-.todo-app h1 {
-    font-size: 2.4rem; /* Título más grande */
-    font-weight: 600;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* ============================================================
-    Sección de estadísticas y barra de progreso - Mejorada
-   ============================================================ */
-.stat-container {
-    padding: 20px 25px; /* Mayor padding */
-    border-radius: 15px; /* Bordes más redondeados */
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
-}
-
-.details {
-    width: 100%;
-}
-
-.details h3 {
-    color: #fff;
-    font-size: 1.3rem; /* Texto más grande */
-    font-weight: 500;
-    margin-bottom: 15px; /* Mayor espacio */
-    text-align: center;
-    transition: all 0.3s ease; /* Transición suave para cambios de mensaje */
-}
-
-/* Barra de progreso visual - Más visible y atractiva */
-#progressbar {
-    width: 100%;
-    height: 12px; /* Mayor altura para mejor visibilidad */
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.15); /* Fondo más contrastante */
-    overflow: hidden;
-    position: relative;
-    margin-top: 15px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra interna */
-}
-
-/* Indicador de progreso - Con animación suave */
-#progress {
-    height: 100%;
-    width: 0%; /* Empezar en 0% */
-    background: linear-gradient(90deg, #04fc57, #00d547); /* Gradiente atractivo */
-    border-radius: 25px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Animación más suave */
-    position: relative;
-    box-shadow: 0 0 10px rgba(4, 252, 87, 0.4); /* Brillo suave */
-}
-
-/* Efecto de brillo en el progreso */
-#progress::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shine 2s infinite;
-    border-radius: 25px;
-}
-
-@keyframes shine {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* ============================================================
-    Estadísticas numéricas de tareas - Mejoradas
-   ============================================================ */
-#numbers {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 90px; /* Ligeramente más grande */
-    height: 90px;
-    background: rgba(255, 194, 209, 0.4); /* Más opaco */
-    font-weight: bold;
-    margin-top: 15px;
-    font-size: 1.2rem; /* Fuente más grande */
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(255, 194, 209, 0.2); /* Sombra suave */
-    transition: all 0.3s ease;
-}
-
-#numbers:hover {
-    transform: scale(1.05);
-}
-
-/* ============================================================
-    Área de entrada para agregar nuevas tareas - Mejorada
-   ============================================================ */
-.input-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 15px; /* Mayor espacio entre input y botón */
-}
-
-.input-area input {
-    flex: 1;
-    padding: 15px 20px; /* Mayor padding */
-    font-size: 1.2rem; /* Fuente más grande */
-    border: none;
-    outline: none;
-    border-radius: 25px; /* Más redondeado */
-    background: rgba(255, 255, 255, 0.1); /* Fondo más sutil */
-    color: #fff; /* Texto blanco */
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.input-area input:focus {
-    border-color: #04fc57;
-    box-shadow: 0 0 20px rgba(4, 252, 87, 0.3);
-    transform: scale(1.02);
-}
-
-.input-area input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* Botón para agregar tarea - Más grande y atractivo */
-.input-area button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px; /* Mayor padding */
-    border-radius: 50%;
-    color: #fff;
-    font-size: 1.3rem; /* Icono más grande */
-    background: rgba(4, 252, 87, 0.8);
-    border: 2px solid rgba(4, 252, 87, 0.8);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(4, 252, 87, 0.3);
-}
-
-.input-area button:hover {
-    transform: scale(1.1);
-    background: #04fc57;
-    box-shadow: 0 6px 20px rgba(4, 252, 87, 0.4);
-}
-
-/* ============================================================
-    Contenedor de la lista de tareas y estado vacío - Mejorado
-   ============================================================ */
-.todos-container {
-    width: 100%;
-    max-height: 350px; /* Mayor altura */
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Mayor espacio */
-    padding-right: 15px;
-}
-
-/* ============================================================
-    Lista de tareas - UI más grande y clara
-   ============================================================ */
-#task-list {
-    width: 100%;
-}
-
-#task-list li {
-    list-style: none;
-    background: rgba(255, 255, 255, 0.1); /* Fondo más sutil */
-    padding: 15px 18px; /* Mayor padding */
-    border-radius: 20px; /* Más redondeado */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.3rem; /* Fuente más grande */
-    color: #fff;
-    margin-bottom: 15px; /* Mayor margen */
-    position: relative;
-    transition: all 0.3s ease;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-#task-list li:hover {
-    box-shadow: 0 6px 25px rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-/* ============================================================
-    Checkbox personalizado para marcar tareas completadas - Mejorado
-   ============================================================ */
-#task-list li .checkbox {
-    min-width: 24px; /* Más grande */
-    height: 24px;
-    border: 3px solid rgba(255, 255, 255, 0.4);
-    background: transparent;
-    border-radius: 50%;
-    appearance: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#task-list li .checkbox:checked {
-    background: #04fc57;
-    border-color: #04fc57;
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(4, 252, 87, 0.5);
-}
-
-#task-list li .checkbox:checked::before {
-    content: '✔';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-size: 1.1rem; /* Más grande */
-    font-weight: bold;
-}
-
-/* Texto de la tarea - Mayor tamaño */
-#task-list li span {
-    flex: 1;
-    margin: 0 15px; /* Mayor margen */
-    word-wrap: break-word;
-    line-height: 1.4;
-}
-
-/* ============================================================
-    Imagen mostrada cuando no hay tareas
-   ============================================================ */
-.empty-image {
-    width: 100px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-/* ============================================================
-    Botones de edición y eliminación de tareas - Mejorados
-   ============================================================ */
-.task-buttons {
-    display: flex;
-    gap: 12px; /* Mayor espacio */
-    margin-right: auto;
-}
-
-.task-buttons button {
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    border-radius: 50%;
-    width: 36px; /* Más grandes */
-    height: 36px;
-    color: #fff;
-    font-size: 0.9rem; /* Ligeramente más grande */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.task-buttons button:hover {
-    transform: scale(1.15);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Botón de edición - Color azul */
-.task-buttons .edit-btn {
-    background: rgba(30, 144, 255, 0.8);
-    border: 2px solid rgba(30, 144, 255, 0.4);
-}
-
-.task-buttons .edit-btn:hover {
-    background: #1e90ff;
-    border-color: #1e90ff;
-}
-
-/* Botón de eliminación - Color púrpura */
-.task-buttons .delete-btn {
-    background: rgba(178, 0, 248, 0.8);
-    border: 2px solid rgba(178, 0, 248, 0.4);
-}
-
-.task-buttons .delete-btn:hover {
-    background: #b200f8;
-    border-color: #b200f8;
-}
-
-/* ============================================================
-    Tareas completadas: estilo tachado y color atenuado
-   ============================================================ */
-#task-list li.completed span {
-    text-decoration: line-through;
-    color: #aaa; 
-}
-
-/* ============================================================
-    Animación de confeti para cuando se completan todas las tareas
-   ============================================================ */
-@keyframes confetti-fall {
-    0% {
-        transform: translateY(-100vh) rotate(0deg);
-        opacity: 1;
+    Incluye fondo por defecto y transición suave.
+    ============================================================ */
+    body {
+        font-family: "Jost", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: url(./images/background-image.jpg) no-repeat center center/cover;
+        transition: all 0.8s ease;
+        position: relative;
     }
-    100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
+
+    /* ============================================================
+    Fondos dinámicos según el clima (se aplican con clases JS)
+    ============================================================ */
+    body.weather-clear {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #ffeaa7 100%);
     }
-}
 
-/* ============================================================
-    Weather Widget Styles
-   ============================================================ */
-.weather-widget {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
-    padding: 15px 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    z-index: 100;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.weather-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: white;
-    font-size: 0.9rem;
-}
-
-.weather-icon {
-    font-size: 1.5rem;
-}
-
-.weather-details {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.temperature {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.weather-desc {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    text-transform: capitalize;
-}
-
-.location {
-    font-size: 0.8rem;
-    opacity: 0.7;
-    margin-left: auto;
-}
-
-.weather-controls {
-    display: flex;
-    justify-content: center;
-}
-
-.weather-toggle {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-}
-
-.weather-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-/* ============================================================
-    Weather Particles and Animations
-   ============================================================ */
-.weather-particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Rain particles */
-.raindrop {
-    position: absolute;
-    width: 2px;
-    height: 15px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
-    animation: rain-fall linear infinite;
-    border-radius: 50%;
-}
-
-@keyframes rain-fall {
-    0% {
-        transform: translateY(-100vh);
-        opacity: 1;
+    body.weather-clouds {
+        background: linear-gradient(135deg, #636e72 0%, #74b9ff 50%, #ddd 100%);
     }
-    100% {
-        transform: translateY(100vh);
-        opacity: 0.3;
-    }
-}
 
-/* Snow particles */
-.snowflake {
-    position: absolute;
-    color: rgba(255, 255, 255, 0.8);
-    user-select: none;
-    pointer-events: none;
-    animation: snow-fall linear infinite;
-    font-size: 1rem;
-}
+    body.weather-rain {
+        background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%);
+    }
 
-@keyframes snow-fall {
-    0% {
-        transform: translateY(-100vh) rotate(0deg);
-        opacity: 1;
+    body.weather-snow {
+        background: linear-gradient(135deg, #74b9ff 0%, #ffffff 50%, #ddd 100%);
     }
-    100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-    }
-}
 
-/* Enhanced UI animations and effects */
-.todo-app {
-    animation: app-fade-in 0.8s ease-out;
-}
+    body.weather-thunder {
+        background: linear-gradient(135deg, #2d3436 0%, #636e72 30%, #6c5ce7 100%);
+    }
 
-@keyframes app-fade-in {
-    0% {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
+    body.weather-night {
+        background: linear-gradient(135deg, #2d3436 0%, #000000 50%, #636e72 100%);
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
 
-/* Responsive design for weather widget */
-@media (max-width: 768px) {
-    .weather-widget {
-        top: 10px;
-        right: 10px;
-        padding: 10px 15px;
-        font-size: 0.8rem;
+    /* ============================================================
+    Contenedor principal centrado para la app
+    ============================================================ */
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 0 20px;
     }
-    
-    .weather-info {
-        gap: 8px;
+
+    /* ============================================================
+    Tarjeta principal de la Todo App
+    Diseño moderno, centrado y con sombras suaves.
+    ============================================================ */
+    .todo-app {
+        width: 100%;
+        max-width: 450px;
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 35px;
+        color: #fff;
+        border-radius: 25px;
+        box-shadow: 0 0 120px rgba(0, 0, 0, 0.6), 0 15px 35px rgba(0, 0, 0, 0.3);
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
     }
-    
-    .weather-icon {
+
+    .todo-app h1 {
+        font-size: 2.4rem;
+        font-weight: 600;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ============================================================
+    Sección de estadísticas y barra de progreso
+    Barra visual y mensaje de avance.
+    ============================================================ */
+    .stat-container {
+        padding: 20px 25px;
+        border-radius: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .details {
+        width: 100%;
+    }
+
+    .details h3 {
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-bottom: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Barra de progreso visual */
+    #progressbar {
+        width: 100%;
+        height: 12px;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.15);
+        overflow: hidden;
+        position: relative;
+        margin-top: 15px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Indicador de progreso animado */
+    #progress {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #04fc57, #00d547);
+        border-radius: 25px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        box-shadow: 0 0 10px rgba(4, 252, 87, 0.4);
+    }
+
+    /* Efecto de brillo animado en el progreso */
+    #progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shine 2s infinite;
+        border-radius: 25px;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* ============================================================
+    Estadísticas numéricas de tareas (círculo grande)
+    ============================================================ */
+    #numbers {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        background: rgba(255, 194, 209, 0.4);
+        font-weight: bold;
+        margin-top: 15px;
         font-size: 1.2rem;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(255, 194, 209, 0.2);
+        transition: all 0.3s ease;
     }
-    
+
+    #numbers:hover {
+        transform: scale(1.05);
+    }
+
+    /* ============================================================
+    Área de entrada para agregar nuevas tareas
+    ============================================================ */
+    .input-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .input-area input {
+        flex: 1;
+        padding: 15px 20px;
+        font-size: 1.2rem;
+        border: none;
+        outline: none;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .input-area input:focus {
+        border-color: #04fc57;
+        box-shadow: 0 0 20px rgba(4, 252, 87, 0.3);
+        transform: scale(1.02);
+    }
+
+    .input-area input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Botón para agregar tarea */
+    .input-area button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 1.3rem;
+        background: rgba(4, 252, 87, 0.8);
+        border: 2px solid rgba(4, 252, 87, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(4, 252, 87, 0.3);
+    }
+
+    .input-area button:hover {
+        transform: scale(1.1);
+        background: #04fc57;
+        box-shadow: 0 6px 20px rgba(4, 252, 87, 0.4);
+    }
+
+    /* ============================================================
+    Contenedor de la lista de tareas y estado vacío
+    ============================================================ */
+    .todos-container {
+        width: 100%;
+        max-height: 350px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-right: 15px;
+    }
+
+    /* ============================================================
+    Lista de tareas (ul) y elementos de tarea (li)
+    ============================================================ */
+    #task-list {
+        width: 100%;
+    }
+
+    #task-list li {
+        list-style: none;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px 18px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.3rem;
+        color: #fff;
+        margin-bottom: 15px;
+        position: relative;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    #task-list li:hover {
+        box-shadow: 0 6px 25px rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ============================================================
+    Checkbox personalizado para marcar tareas completadas
+    ============================================================ */
+    #task-list li .checkbox {
+        min-width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        background: transparent;
+        border-radius: 50%;
+        appearance: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #task-list li .checkbox:checked {
+        background: #04fc57;
+        border-color: #04fc57;
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(4, 252, 87, 0.5);
+    }
+
+    #task-list li .checkbox:checked::before {
+        content: '✔';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    /* Texto de la tarea */
+    #task-list li span {
+        flex: 1;
+        margin: 0 15px;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    /* ============================================================
+    Imagen mostrada cuando no hay tareas
+    ============================================================ */
+    .empty-image {
+        width: 100px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* ============================================================
+    Botones de edición y eliminación de tareas
+    ============================================================ */
+    .task-buttons {
+        display: flex;
+        gap: 12px;
+        margin-right: auto;
+    }
+
+    .task-buttons button {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        color: #fff;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .task-buttons button:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Botón de edición */
+    .task-buttons .edit-btn {
+        background: rgba(30, 144, 255, 0.8);
+        border: 2px solid rgba(30, 144, 255, 0.4);
+    }
+
+    .task-buttons .edit-btn:hover {
+        background: #1e90ff;
+        border-color: #1e90ff;
+    }
+
+    /* Botón de eliminación */
+    .task-buttons .delete-btn {
+        background: rgba(178, 0, 248, 0.8);
+        border: 2px solid rgba(178, 0, 248, 0.4);
+    }
+
+    .task-buttons .delete-btn:hover {
+        background: #b200f8;
+        border-color: #b200f8;
+    }
+
+    /* ============================================================
+    Tareas completadas: estilo tachado y color atenuado
+    ============================================================ */
+    #task-list li.completed span {
+        text-decoration: line-through;
+        color: #aaa; 
+    }
+
+    /* ============================================================
+    Animación de confeti para cuando se completan todas las tareas
+    ============================================================ */
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    /* ============================================================
+    Widget del clima: posición, fondo y detalles
+    ============================================================ */
+    .weather-widget {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border-radius: 15px;
+        padding: 15px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        z-index: 100;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .weather-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .weather-icon {
+        font-size: 1.5rem;
+    }
+
+    .weather-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
     .temperature {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .weather-desc {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        text-transform: capitalize;
+    }
+
+    .location {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-left: auto;
+    }
+
+    .weather-controls {
+        display: flex;
+        justify-content: center;
+    }
+
+    .weather-toggle {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .weather-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    /* ============================================================
+    Partículas y animaciones del clima
+    ============================================================ */
+    .weather-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Partículas de lluvia */
+    .raindrop {
+        position: absolute;
+        width: 2px;
+        height: 15px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
+        animation: rain-fall linear infinite;
+        border-radius: 50%;
+    }
+
+    @keyframes rain-fall {
+        0% {
+            transform: translateY(-100vh);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh);
+            opacity: 0.3;
+        }
+    }
+
+    /* Partículas de nieve */
+    .snowflake {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.8);
+        user-select: none;
+        pointer-events: none;
+        animation: snow-fall linear infinite;
         font-size: 1rem;
     }
-}
+
+    @keyframes snow-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* Animaciones y efectos UI mejorados */
+    .todo-app {
+        animation: app-fade-in 0.8s ease-out;
+    }
+
+    @keyframes app-fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Diseño responsivo para el widget del clima */
+    @media (max-width: 768px) {
+        .weather-widget {
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+        }
+        
+        .weather-info {
+            gap: 8px;
+        }
+        
+        .weather-icon {
+            font-size: 1.2rem;
+        }
+        
+        .temperature {
+            font-size: 1rem;
+        }
+    }
