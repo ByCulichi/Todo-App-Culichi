@@ -119,7 +119,12 @@ class DailyTasksApp {
         // Envío del formulario de tareas (agregar o editar)
         this.taskForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.addTask();
+            // Verifica si está en modo edición o agregar
+            if (this.taskForm.dataset.editId) {
+                this.updateTask(this.taskForm.dataset.editId);
+            } else {
+                this.addTask();
+            }
         });
 
         // Cerrar modal con tecla ESC
@@ -165,14 +170,33 @@ class DailyTasksApp {
         const date = this.taskDateInput.value;
         const emoji = this.taskEmojiSelect.value;
 
+        // Validaciones
         if (!name) {
-            alert('Please enter a task name');
+            this.showCustomAlert('Por favor ingresa un nombre para la tarea', 'error');
             return;
+        }
+
+        if (!date) {
+            this.showCustomAlert('Por favor selecciona una fecha para la tarea', 'error');
+            return;
+        }
+
+        // Validar que la fecha no sea muy antigua
+        const selectedDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            const confirmed = confirm('La fecha seleccionada es anterior a hoy. ¿Deseas continuar?');
+            if (!confirmed) {
+                return;
+            }
         }
 
         const task = {
             id: Date.now().toString(),
-            name,
+            name: this.escapeHtml(name),
             date,
             emoji,
             completed: false,
@@ -285,7 +309,7 @@ class DailyTasksApp {
             <div class="task-content">
                 <div class="task-header">
                     ${task.emoji ? `<span class="task-emoji">${task.emoji}</span>` : ''}
-                    <span class="task-name">${task.name}</span>
+                    <span class="task-name">${this.escapeHtml(task.name)}</span>
                 </div>
                 <div class="task-date">
                     <i class="fas fa-calendar-alt"></i>
@@ -346,8 +370,8 @@ class DailyTasksApp {
     editTask(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
         if (task && !task.completed) {
-            // Prellena el formulario con los datos actuales
-            this.taskNameInput.value = task.name;
+            // Prellena el formulario con los datos actuales (desescapando HTML)
+            this.taskNameInput.value = this.unescapeHtml(task.name);
             this.taskDateInput.value = task.date;
             this.taskEmojiSelect.value = task.emoji || '';
 
@@ -357,12 +381,6 @@ class DailyTasksApp {
 
             // Abre el modal
             this.openTaskModal();
-
-            // Cambia el evento submit para actualizar la tarea
-            this.taskForm.onsubmit = (e) => {
-                e.preventDefault();
-                this.updateTask(taskId);
-            };
         }
     }
 
@@ -373,22 +391,38 @@ class DailyTasksApp {
     updateTask(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
         if (task) {
-            task.name = this.taskNameInput.value.trim();
-            task.date = this.taskDateInput.value;
-            task.emoji = this.taskEmojiSelect.value;
+            const name = this.taskNameInput.value.trim();
+            const date = this.taskDateInput.value;
+            const emoji = this.taskEmojiSelect.value;
+
+            // Validaciones
+            if (!name) {
+                this.showCustomAlert('Por favor ingresa un nombre para la tarea', 'error');
+                return;
+            }
+
+            if (!date) {
+                this.showCustomAlert('Por favor selecciona una fecha para la tarea', 'error');
+                return;
+            }
+
+            task.name = this.escapeHtml(name);
+            task.date = date;
+            task.emoji = emoji;
             task.updatedAt = new Date().toISOString();
 
             this.saveUserTasks();
             this.renderTasks();
+            this.updateTaskCounts();
+            this.updateEmptyState();
+            this.updateProgressBar();
             this.closeTaskModal();
 
             // Restaura el formulario a modo agregar
             delete this.taskForm.dataset.editId;
             this.taskForm.querySelector('.btn-primary').innerHTML = '<i class="fas fa-plus"></i> Create Task';
-            this.taskForm.onsubmit = (e) => {
-                e.preventDefault();
-                this.addTask();
-            };
+
+            this.showCustomAlert('Tarea actualizada exitosamente', 'success');
         }
     }
 
@@ -397,13 +431,19 @@ class DailyTasksApp {
      * @param {string} taskId - ID de la tarea.
      */
     deleteTask(taskId) {
-        if (confirm('Are you sure you want to delete this task?')) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        // Mejor confirmación que el alert nativo
+        const confirmed = confirm(`¿Estás seguro de que deseas eliminar la tarea "${task.name}"? Esta acción no se puede deshacer.`);
+        if (confirmed) {
             this.tasks = this.tasks.filter(t => t.id !== taskId);
             this.saveUserTasks();
             this.renderTasks();
             this.updateTaskCounts();
             this.updateEmptyState();
             this.updateProgressBar();
+            this.showCustomAlert('Tarea eliminada exitosamente', 'success');
         }
     }
 
@@ -772,6 +812,124 @@ class DailyTasksApp {
     }
 
     // ==========================
+    // UTILIDADES
+    // ==========================
+
+    /**
+     * Escapa caracteres HTML para prevenir ataques XSS.
+     * @param {string} unsafe - Texto sin escapar.
+     * @returns {string} - Texto escapado.
+     */
+    escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    /**
+     * Desescapa caracteres HTML para edición.
+     * @param {string} safe - Texto escapado.
+     * @returns {string} - Texto sin escapar.
+     */
+    unescapeHtml(safe) {
+        return safe
+            .replace(/&#039;/g, "'")
+            .replace(/&quot;/g, '"')
+            .replace(/&gt;/g, ">")
+            .replace(/&lt;/g, "<")
+            .replace(/&amp;/g, "&");
+    }
+
+    /**
+     * Muestra un mensaje personalizado en lugar de alert() nativo.
+     * @param {string} message - Mensaje a mostrar.
+     * @param {string} type - Tipo de mensaje ('success', 'error', 'warning', 'info').
+     */
+    showCustomAlert(message, type = 'info') {
+        // Elimina alertas anteriores
+        const existingAlert = document.querySelector('.custom-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `custom-alert custom-alert-${type}`;
+        
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-triangle', 
+            warning: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+
+        alertDiv.innerHTML = `
+            <div class="custom-alert-content">
+                <i class="fas ${icons[type]}"></i>
+                <span>${this.escapeHtml(message)}</span>
+                <button class="custom-alert-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        alertDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#2ed573' : type === 'warning' ? '#ffa502' : '#3742fa'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideInAlert 0.3s ease-out;
+            max-width: 400px;
+        `;
+
+        // Añade animación CSS si no existe
+        if (!document.querySelector('#customAlertStyles')) {
+            const style = document.createElement('style');
+            style.id = 'customAlertStyles';
+            style.textContent = `
+                @keyframes slideInAlert {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                .custom-alert-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .custom-alert-close {
+                    background: none;
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                    margin-left: auto;
+                    opacity: 0.8;
+                    transition: opacity 0.2s;
+                }
+                .custom-alert-close:hover {
+                    opacity: 1;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(alertDiv);
+        
+        // Auto-remove después de 5 segundos
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+
+    // ==========================
     // PERSISTENCIA DE DATOS
     // ==========================
 
@@ -779,26 +937,38 @@ class DailyTasksApp {
      * Guarda las tareas del usuario en localStorage.
      */
     saveUserTasks() {
-        const userData = {
-            userId: this.currentUser.id,
-            tasks: this.tasks,
-            lastUpdated: new Date().toISOString()
-        };
-        localStorage.setItem(`dailyTasks_userData_${this.currentUser.id}`, JSON.stringify(userData));
+        try {
+            const userData = {
+                userId: this.currentUser.id,
+                tasks: this.tasks,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem(`dailyTasks_userData_${this.currentUser.id}`, JSON.stringify(userData));
+        } catch (error) {
+            console.error('Error saving tasks:', error);
+            this.showCustomAlert('Error al guardar las tareas. Verifica el espacio disponible.', 'error');
+        }
     }
 
     /**
      * Carga las tareas del usuario desde localStorage.
      */
     loadUserTasks() {
-        const savedData = localStorage.getItem(`dailyTasks_userData_${this.currentUser.id}`);
-        if (savedData) {
-            const userData = JSON.parse(savedData);
-            this.tasks = userData.tasks || [];
-        } else {
+        try {
+            const savedData = localStorage.getItem(`dailyTasks_userData_${this.currentUser.id}`);
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                this.tasks = userData.tasks || [];
+            } else {
+                this.tasks = [];
+            }
+            this.renderTasks();
+        } catch (error) {
+            console.error('Error loading tasks:', error);
             this.tasks = [];
+            this.showCustomAlert('Error al cargar las tareas guardadas.', 'error');
+            this.renderTasks();
         }
-        this.renderTasks();
     }
 
     /**
