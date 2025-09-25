@@ -1,119 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!-- ============================================================
+        auth.html
+        ============================================================
+        Este archivo HTML contiene las pantallas de autenticación para la app Daily Tasks.
+        Incluye formularios para iniciar sesión, crear cuenta y recuperar contraseña.
+        Cada sección está separada y se muestra/oculta según la acción del usuario.
+        Los estilos y la lógica de interacción están en archivos externos.
+        ============================================================ -->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Tasks - Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="auth-styles.css">
-</head>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<body>
-    <div class="container">
-        <!-- Login Screen -->
-        <div class="auth-container" id="login-screen">
-            <div class="auth-card">
-                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
-                <p class="auth-subtitle">Sign in to manage your tasks</p>
-                
-                <form class="auth-form" id="login-form">
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="login-email" placeholder="Email address" required>
-                    </div>
+    <head>
+        <!-- ============================================================
+            Metadatos y enlaces a estilos y fuentes
+            ============================================================ -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Daily Tasks - Login</title>
+
+        <!-- Iconos Font Awesome para botones y elementos visuales -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <!-- Estilos principales y de autenticación -->
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="auth-styles.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- ============================================================
+                Pantalla de Inicio de Sesión (Login)
+                ============================================================
+                Permite al usuario ingresar su correo y contraseña para acceder.
+                Incluye enlaces para recuperar contraseña y crear cuenta.
+                ============================================================ -->
+            <div class="auth-container" id="login-screen">
+                <div class="auth-card">
+                    <!-- Título e icono de la app -->
+                    <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                    <p class="auth-subtitle">Sign in to manage your tasks</p>
                     
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" placeholder="Password" required>
-                    </div>
+                    <!-- Formulario de inicio de sesión -->
+                    <form class="auth-form" id="login-form">
+                        <!-- Campo de correo electrónico -->
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" placeholder="Email address" required>
+                        </div>
+                        
+                        <!-- Campo de contraseña -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Password" required>
+                        </div>
+                        
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" class="auth-btn primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+                        
+                        <!-- Enlaces de ayuda: recuperar contraseña y crear cuenta -->
+                        <div class="auth-links">
+                            <a href="#" id="forgot-password-link">Forgot Password?</a>
+                            <a href="#" id="show-register">Create Account</a>
+                        </div>
+                    </form>
                     
-                    <button type="submit" class="auth-btn primary">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Sign In
-                    </button>
-                    
-                    <div class="auth-links">
-                        <a href="#" id="forgot-password-link">Forgot Password?</a>
-                        <a href="#" id="show-register">Create Account</a>
+                    <!-- Información para modo demo -->
+                    <div class="demo-info">
+                        <p><i class="fas fa-info-circle"></i> Demo: Use any email/password combination</p>
                     </div>
-                </form>
-                
-                <div class="demo-info">
-                    <p><i class="fas fa-info-circle"></i> Demo: Use any email/password combination</p>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                Pantalla de Registro (Create Account)
+                ============================================================
+                Permite al usuario crear una nueva cuenta ingresando nombre,
+                correo y contraseña. Incluye confirmación de contraseña.
+                ============================================================ -->
+            <div class="auth-container hidden" id="register-screen">
+                <div class="auth-card">
+                    <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                    <p class="auth-subtitle">Create your account</p>
+                    
+                    <!-- Formulario de registro -->
+                    <form class="auth-form" id="register-form">
+                        <!-- Campo de nombre completo -->
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="register-name" placeholder="Full Name" required>
+                        </div>
+                        
+                        <!-- Campo de correo electrónico -->
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="register-email" placeholder="Email address" required>
+                        </div>
+                        
+                        <!-- Campo de contraseña -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                        </div>
+                        
+                        <!-- Campo para confirmar contraseña -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-confirm" placeholder="Confirm Password" required>
+                        </div>
+                        
+                        <!-- Botón para crear la cuenta -->
+                        <button type="submit" class="auth-btn primary">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                        
+                        <!-- Enlace para volver a la pantalla de inicio de sesión -->
+                        <div class="auth-links">
+                            <a href="#" id="show-login">Already have an account? Sign In</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                Pantalla de Recuperación de Contraseña (Password Recovery)
+                ============================================================
+                Permite al usuario solicitar un enlace para restablecer su contraseña.
+                ============================================================ -->
+            <div class="auth-container hidden" id="recovery-screen">
+                <div class="auth-card">
+                    <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+                    <p class="auth-subtitle">Reset your password</p>
+                    
+                    <!-- Formulario de recuperación de contraseña -->
+                    <form class="auth-form" id="recovery-form">
+                        <!-- Campo de correo electrónico para recuperación -->
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="recovery-email" placeholder="Enter your email address" required>
+                        </div>
+                        
+                        <!-- Botón para enviar el enlace de recuperación -->
+                        <button type="submit" class="auth-btn primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Reset Link
+                        </button>
+                        
+                        <!-- Enlace para volver a la pantalla de inicio de sesión -->
+                        <div class="auth-links">
+                            <a href="#" id="back-to-login">Back to Sign In</a>
+                        </div>
+                    </form>
+                    
+                    <!-- Información para modo demo -->
+                    <div class="demo-info">
+                        <p><i class="fas fa-info-circle"></i> Demo: Password reset simulation</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Register Screen -->
-        <div class="auth-container hidden" id="register-screen">
-            <div class="auth-card">
-                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
-                <p class="auth-subtitle">Create your account</p>
-                
-                <form class="auth-form" id="register-form">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="register-name" placeholder="Full Name" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="register-email" placeholder="Email address" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="register-password" placeholder="Password (min 6 chars)" minlength="6" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="register-confirm" placeholder="Confirm Password" required>
-                    </div>
-                    
-                    <button type="submit" class="auth-btn primary">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
-                    </button>
-                    
-                    <div class="auth-links">
-                        <a href="#" id="show-login">Already have an account? Sign In</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Password Recovery Screen -->
-        <div class="auth-container hidden" id="recovery-screen">
-            <div class="auth-card">
-                <h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
-                <p class="auth-subtitle">Reset your password</p>
-                
-                <form class="auth-form" id="recovery-form">
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="recovery-email" placeholder="Enter your email address" required>
-                    </div>
-                    
-                    <button type="submit" class="auth-btn primary">
-                        <i class="fas fa-paper-plane"></i>
-                        Send Reset Link
-                    </button>
-                    
-                    <div class="auth-links">
-                        <a href="#" id="back-to-login">Back to Sign In</a>
-                    </div>
-                </form>
-                
-                <div class="demo-info">
-                    <p><i class="fas fa-info-circle"></i> Demo: Password reset simulation</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="auth.js"></script>
-</body>
-</html>
+        <!-- ============================================================
+            Script de autenticación (maneja la lógica de mostrar/ocultar pantallas,
+            validaciones y simulación de autenticación para el demo)
+            ============================================================ -->
+        <script src="auth.js"></script>
+    </body>
+    </html>
