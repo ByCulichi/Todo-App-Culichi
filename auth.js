@@ -163,10 +163,21 @@
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Busca el usuario (en una app real sería en el servidor)
-            const user = this.users.find(u => u.email === email);
+            let user = this.users.find(u => u.email === email);
 
-            // Verifica credenciales
-            if (!user || user.password !== password) {
+            // En modo demo, si no existe el usuario, lo crea automáticamente
+            if (!user) {
+                user = {
+                    id: Date.now().toString(),
+                    name: email.split('@')[0] || 'Demo User',
+                    email,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+                this.users.push(user);
+                localStorage.setItem('dailyTasks_users', JSON.stringify(this.users));
+            } else if (user.password !== password) {
+                // Si el usuario existe pero la contraseña no coincide
                 this.showMessage('Correo electrónico o contraseña inválidos');
                 this.setLoading(submitBtn, false);
                 return;
