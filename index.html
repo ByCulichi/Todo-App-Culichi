@@ -1,63 +1,987 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Metadatos y enlaces a estilos y fuentes -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
-    <!-- Iconos Font Awesome para botones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="style.css">
+    <title>Multi-List Todo App</title>
 </head>
-
 <body>
-    <!-- Contenedor principal de la aplicación -->
-    <div class="container">
+    <script>
+        // ============================================================
+        // Multi-List Todo App - Complete Application in Single File
+        // Similar to Microsoft To Do interface
+        // ============================================================
 
-        <div class="todo-app">
-            <!-- Título principal -->
-            <h1>Todo App</h1>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ============================================================
+            // STATE MANAGEMENT
+            // ============================================================
+            let appState = {
+                lists: {},
+                activeListId: null,
+                nextListId: 1,
+                nextTaskId: 1
+            };
 
-            <!-- Sección de estadísticas y progreso -->
-            <div class="stat-container">
-                <div class="details">
-                    <h3 id="progress-message">Keep it Up!</h3>
-                    <!-- Barra de progreso visual -->
-                    <div id="progressbar">
-                        <!-- Indicador de progreso dentro de la barra -->
-                        <div id="progress"></div>
+            // ============================================================
+            // UTILITY FUNCTIONS
+            // ============================================================
+            const generateId = (type = 'task') => {
+                if (type === 'list') {
+                    return `list_${appState.nextListId++}`;
+                }
+                return `task_${appState.nextTaskId++}`;
+            };
+
+            const saveToStorage = () => {
+                localStorage.setItem('todoLists', JSON.stringify(appState));
+            };
+
+            const loadFromStorage = () => {
+                const stored = localStorage.getItem('todoLists');
+                if (stored) {
+                    appState = JSON.parse(stored);
+                    // Ensure next IDs are properly set
+                    let maxListId = 0;
+                    let maxTaskId = 0;
+                    Object.keys(appState.lists).forEach(listId => {
+                        const numId = parseInt(listId.split('_')[1]);
+                        if (numId > maxListId) maxListId = numId;
+                        appState.lists[listId].tasks.forEach(task => {
+                            const taskNumId = parseInt(task.id.split('_')[1]);
+                            if (taskNumId > maxTaskId) maxTaskId = taskNumId;
+                        });
+                    });
+                    appState.nextListId = maxListId + 1;
+                    appState.nextTaskId = maxTaskId + 1;
+                } else {
+                    // Create default list
+                    const defaultListId = generateId('list');
+                    appState.lists[defaultListId] = {
+                        id: defaultListId,
+                        name: 'My Tasks',
+                        tasks: [],
+                        createdAt: Date.now()
+                    };
+                    appState.activeListId = defaultListId;
+                }
+            };
+
+            // ============================================================
+            // DOM CREATION AND SETUP
+            // ============================================================
+            const createAppStructure = () => {
+                document.body.innerHTML = `
+                    <style>
+                        /* ============================================================
+                           FONTS AND RESET
+                           ============================================================ */
+                        @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,200;0,400;0,500;0,600;0,700;1,600&display=swap');
+                        
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+
+                        body {
+                            font-family: "Jost", sans-serif;
+                            background: url('./images/background-image.jpg') no-repeat center center/cover;
+                            min-height: 100vh;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            color: #fff;
+                        }
+
+                        /* ============================================================
+                           MAIN CONTAINER
+                           ============================================================ */
+                        .app-container {
+                            display: flex;
+                            width: 90%;
+                            max-width: 1000px;
+                            height: 600px;
+                            background: rgba(255, 255, 255, 0.1);
+                            backdrop-filter: blur(15px);
+                            border-radius: 25px;
+                            border: 2px solid rgba(255, 255, 255, 0.15);
+                            box-shadow: 0 0 120px rgba(0, 0, 0, 0.6);
+                            overflow: hidden;
+                        }
+
+                        /* ============================================================
+                           SIDEBAR - LISTS MANAGEMENT
+                           ============================================================ */
+                        .sidebar {
+                            width: 280px;
+                            background: rgba(255, 255, 255, 0.05);
+                            border-right: 1px solid rgba(255, 255, 255, 0.1);
+                            padding: 20px;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 20px;
+                        }
+
+                        .sidebar h1 {
+                            font-size: 1.8rem;
+                            font-weight: bold;
+                            text-align: center;
+                            margin-bottom: 10px;
+                        }
+
+                        .create-list-btn {
+                            background: rgba(4, 252, 87, 0.8);
+                            border: none;
+                            border-radius: 15px;
+                            padding: 12px 20px;
+                            color: white;
+                            font-weight: bold;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        }
+
+                        .create-list-btn:hover {
+                            background: #04fc57;
+                            transform: translateY(-2px);
+                        }
+
+                        .lists-container {
+                            flex: 1;
+                            overflow-y: auto;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                        }
+
+                        .list-item {
+                            background: rgba(255, 255, 255, 0.1);
+                            border: 2px solid transparent;
+                            border-radius: 12px;
+                            padding: 12px 15px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+
+                        .list-item:hover {
+                            background: rgba(255, 255, 255, 0.15);
+                            transform: translateX(5px);
+                        }
+
+                        .list-item.active {
+                            background: rgba(4, 252, 87, 0.2);
+                            border-color: rgba(4, 252, 87, 0.5);
+                        }
+
+                        .list-name {
+                            flex: 1;
+                            font-weight: 500;
+                        }
+
+                        .list-count {
+                            background: rgba(255, 255, 255, 0.2);
+                            padding: 4px 8px;
+                            border-radius: 12px;
+                            font-size: 0.8rem;
+                            min-width: 24px;
+                            text-align: center;
+                        }
+
+                        .list-actions {
+                            display: flex;
+                            gap: 5px;
+                            opacity: 0;
+                            transition: opacity 0.3s ease;
+                        }
+
+                        .list-item:hover .list-actions {
+                            opacity: 1;
+                        }
+
+                        .list-action-btn {
+                            background: rgba(255, 255, 255, 0.2);
+                            border: none;
+                            border-radius: 50%;
+                            width: 24px;
+                            height: 24px;
+                            color: white;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                        }
+
+                        .list-action-btn:hover {
+                            background: rgba(255, 255, 255, 0.3);
+                            transform: scale(1.1);
+                        }
+
+                        /* ============================================================
+                           MAIN CONTENT AREA
+                           ============================================================ */
+                        .main-content {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            padding: 30px;
+                            gap: 25px;
+                        }
+
+                        .list-header {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 15px;
+                        }
+
+                        .list-title {
+                            font-size: 2rem;
+                            font-weight: bold;
+                            background: transparent;
+                            border: none;
+                            color: white;
+                            outline: none;
+                            border-bottom: 2px solid transparent;
+                            transition: border-color 0.3s ease;
+                            padding: 5px 0;
+                        }
+
+                        .list-title:focus {
+                            border-bottom-color: rgba(4, 252, 87, 0.8);
+                        }
+
+                        .progress-section {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                        }
+
+                        .progress-message {
+                            font-size: 1.1rem;
+                            font-weight: 500;
+                        }
+
+                        .progress-bar-container {
+                            width: 100%;
+                            height: 8px;
+                            background: rgba(255, 255, 255, 0.2);
+                            border-radius: 4px;
+                            overflow: hidden;
+                        }
+
+                        .progress-bar {
+                            height: 100%;
+                            background: linear-gradient(90deg, #04fc57, #00d9ff);
+                            width: 0%;
+                            transition: width 0.5s ease;
+                            border-radius: 4px;
+                        }
+
+                        .progress-numbers {
+                            align-self: center;
+                            background: rgba(255, 194, 209, 0.4);
+                            padding: 8px 16px;
+                            border-radius: 20px;
+                            font-weight: bold;
+                            font-size: 1rem;
+                        }
+
+                        .task-input-section {
+                            display: flex;
+                            gap: 15px;
+                            align-items: center;
+                        }
+
+                        .task-input {
+                            flex: 1;
+                            padding: 15px 20px;
+                            background: rgba(255, 255, 255, 0.1);
+                            border: 2px solid rgba(255, 255, 255, 0.2);
+                            border-radius: 20px;
+                            color: white;
+                            font-size: 1rem;
+                            outline: none;
+                            transition: all 0.3s ease;
+                        }
+
+                        .task-input::placeholder {
+                            color: rgba(255, 255, 255, 0.6);
+                        }
+
+                        .task-input:focus {
+                            border-color: rgba(4, 252, 87, 0.8);
+                            background: rgba(255, 255, 255, 0.15);
+                        }
+
+                        .add-task-btn {
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            background: rgba(4, 252, 87, 0.8);
+                            border: none;
+                            color: white;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .add-task-btn:hover {
+                            background: #04fc57;
+                            transform: scale(1.1);
+                        }
+
+                        .tasks-section {
+                            flex: 1;
+                            overflow-y: auto;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 15px;
+                        }
+
+                        .task-item {
+                            background: rgba(255, 255, 255, 0.1);
+                            border: 2px solid rgba(255, 255, 255, 0.15);
+                            border-radius: 15px;
+                            padding: 15px 18px;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s ease;
+                        }
+
+                        .task-item:hover {
+                            background: rgba(255, 255, 255, 0.15);
+                            transform: translateY(-2px);
+                        }
+
+                        .task-item.completed {
+                            opacity: 0.7;
+                        }
+
+                        .task-checkbox {
+                            width: 20px;
+                            height: 20px;
+                            cursor: pointer;
+                        }
+
+                        .task-text {
+                            flex: 1;
+                            font-size: 1.1rem;
+                            word-wrap: break-word;
+                            transition: all 0.3s ease;
+                        }
+
+                        .task-item.completed .task-text {
+                            text-decoration: line-through;
+                            color: #aaa;
+                        }
+
+                        .star-btn {
+                            background: transparent;
+                            border: none;
+                            color: #ffd700;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            opacity: 0.5;
+                        }
+
+                        .star-btn.starred {
+                            opacity: 1;
+                            transform: scale(1.2);
+                        }
+
+                        .star-btn:hover {
+                            transform: scale(1.3);
+                            opacity: 1;
+                        }
+
+                        .task-actions {
+                            display: flex;
+                            gap: 8px;
+                            opacity: 0;
+                            transition: opacity 0.3s ease;
+                        }
+
+                        .task-item:hover .task-actions {
+                            opacity: 1;
+                        }
+
+                        .task-action-btn {
+                            background: rgba(255, 255, 255, 0.2);
+                            border: none;
+                            border-radius: 50%;
+                            width: 30px;
+                            height: 30px;
+                            color: white;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                        }
+
+                        .task-action-btn:hover {
+                            transform: scale(1.1);
+                        }
+
+                        .edit-btn:hover {
+                            background: rgba(30, 144, 255, 0.8);
+                        }
+
+                        .delete-btn:hover {
+                            background: rgba(255, 99, 132, 0.8);
+                        }
+
+                        .empty-state {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 20px;
+                            opacity: 0.7;
+                        }
+
+                        .empty-image {
+                            width: 80px;
+                            height: auto;
+                            opacity: 0.5;
+                        }
+
+                        /* ============================================================
+                           CONFETTI ANIMATION
+                           ============================================================ */
+                        @keyframes confetti-fall {
+                            0% {
+                                transform: translateY(-100vh) rotate(0deg);
+                                opacity: 1;
+                            }
+                            100% {
+                                transform: translateY(100vh) rotate(720deg);
+                                opacity: 0;
+                            }
+                        }
+
+                        /* ============================================================
+                           RESPONSIVE DESIGN
+                           ============================================================ */
+                        @media (max-width: 768px) {
+                            .app-container {
+                                flex-direction: column;
+                                height: auto;
+                                min-height: 90vh;
+                            }
+                            
+                            .sidebar {
+                                width: 100%;
+                                height: auto;
+                                border-right: none;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                            }
+                            
+                            .lists-container {
+                                flex-direction: row;
+                                overflow-x: auto;
+                                flex: none;
+                            }
+                            
+                            .list-item {
+                                min-width: 150px;
+                            }
+                        }
+                    </style>
+
+                    <div class="app-container">
+                        <div class="sidebar">
+                            <h1>Todo App</h1>
+                            <button class="create-list-btn">
+                                <i class="fa-solid fa-plus"></i>
+                                Nueva Lista
+                            </button>
+                            <div class="lists-container" id="lists-container">
+                                <!-- Lists will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="main-content">
+                            <div class="list-header">
+                                <input type="text" class="list-title" id="list-title" placeholder="Nombre de la lista">
+                                
+                                <div class="progress-section">
+                                    <div class="progress-message" id="progress-message">Selecciona o crea una lista</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" id="progress-bar"></div>
+                                    </div>
+                                    <div class="progress-numbers" id="progress-numbers">0/0</div>
+                                </div>
+                            </div>
+
+                            <div class="task-input-section">
+                                <input type="text" class="task-input" id="task-input" placeholder="Agregar nueva tarea...">
+                                <button class="add-task-btn" id="add-task-btn">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <div class="tasks-section" id="tasks-section">
+                                <!-- Tasks will be rendered here -->
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Estadísticas numéricas de tareas -->
-            <div class="stats-number">
-                <p id="numbers">0 / 0</p>
-            </div>
+                    <!-- Font Awesome for icons -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                `;
+            };
 
-            <!-- Área de entrada para agregar nuevas tareas -->
-            <form class="input-area">
-                <input type="text" id="task-input" placeholder="Add a new task...">
-                <!-- Botón para agregar tarea, con icono -->
-                <button type="submit" id="add-task-btn">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </form>
-            
-            <!-- Contenedor de la lista de tareas y estado vacío -->
-            <div class="todos-container">
-                <!-- Lista de tareas -->
-                <ul id="task-list"></ul>
-                <!-- Imagen mostrada cuando no hay tareas -->
-                <img src="./images/empety.jpg" alt="empty" class="empty-image">
-            </div>
-        </div>
+            // ============================================================
+            // LIST MANAGEMENT FUNCTIONS
+            // ============================================================
+            const createNewList = () => {
+                const listId = generateId('list');
+                const listName = `Nueva Lista ${Object.keys(appState.lists).length + 1}`;
+                
+                appState.lists[listId] = {
+                    id: listId,
+                    name: listName,
+                    tasks: [],
+                    createdAt: Date.now()
+                };
+                
+                appState.activeListId = listId;
+                saveToStorage();
+                renderLists();
+                renderMainContent();
+            };
 
-    </div>
+            const deleteList = (listId) => {
+                if (Object.keys(appState.lists).length <= 1) {
+                    alert('No puedes eliminar la última lista');
+                    return;
+                }
+                
+                if (confirm('¿Estás seguro de que quieres eliminar esta lista?')) {
+                    delete appState.lists[listId];
+                    
+                    if (appState.activeListId === listId) {
+                        appState.activeListId = Object.keys(appState.lists)[0];
+                    }
+                    
+                    saveToStorage();
+                    renderLists();
+                    renderMainContent();
+                }
+            };
 
-    <!-- Script principal para la lógica de la aplicación -->
-    <script src="script.js"></script>
+            const selectList = (listId) => {
+                appState.activeListId = listId;
+                renderLists();
+                renderMainContent();
+            };
+
+            const updateListName = (listId, newName) => {
+                if (appState.lists[listId] && newName.trim()) {
+                    appState.lists[listId].name = newName.trim();
+                    saveToStorage();
+                    renderLists();
+                }
+            };
+
+            // ============================================================
+            // TASK MANAGEMENT FUNCTIONS
+            // ============================================================
+            const addTask = (text, starred = false) => {
+                if (!appState.activeListId || !text.trim()) return;
+
+                const taskId = generateId('task');
+                const newTask = {
+                    id: taskId,
+                    text: text.trim(),
+                    completed: false,
+                    starred: starred,
+                    createdAt: Date.now()
+                };
+
+                appState.lists[appState.activeListId].tasks.push(newTask);
+                saveToStorage();
+                renderMainContent();
+            };
+
+            const toggleTask = (taskId) => {
+                if (!appState.activeListId) return;
+                
+                const task = appState.lists[appState.activeListId].tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveToStorage();
+                    renderMainContent();
+                }
+            };
+
+            const toggleStar = (taskId) => {
+                if (!appState.activeListId) return;
+                
+                const task = appState.lists[appState.activeListId].tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.starred = !task.starred;
+                    saveToStorage();
+                    renderMainContent();
+                }
+            };
+
+            const editTask = (taskId, newText) => {
+                if (!appState.activeListId || !newText.trim()) return;
+                
+                const task = appState.lists[appState.activeListId].tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.text = newText.trim();
+                    saveToStorage();
+                    renderMainContent();
+                }
+            };
+
+            const deleteTask = (taskId) => {
+                if (!appState.activeListId) return;
+                
+                const listTasks = appState.lists[appState.activeListId].tasks;
+                const taskIndex = listTasks.findIndex(t => t.id === taskId);
+                
+                if (taskIndex !== -1) {
+                    listTasks.splice(taskIndex, 1);
+                    saveToStorage();
+                    renderMainContent();
+                }
+            };
+
+            // ============================================================
+            // RENDERING FUNCTIONS
+            // ============================================================
+            const renderLists = () => {
+                const container = document.getElementById('lists-container');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                Object.values(appState.lists).forEach(list => {
+                    const taskCount = list.tasks.filter(task => !task.completed).length;
+                    const isActive = list.id === appState.activeListId;
+
+                    const listElement = document.createElement('div');
+                    listElement.className = `list-item ${isActive ? 'active' : ''}`;
+                    listElement.innerHTML = `
+                        <div class="list-name">${list.name}</div>
+                        <div class="list-count">${taskCount}</div>
+                        <div class="list-actions">
+                            <button class="list-action-btn delete-list-btn" data-list-id="${list.id}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    listElement.addEventListener('click', (e) => {
+                        if (!e.target.closest('.list-actions')) {
+                            selectList(list.id);
+                        }
+                    });
+
+                    container.appendChild(listElement);
+                });
+
+                // Add event listeners for list actions
+                container.querySelectorAll('.delete-list-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteList(btn.dataset.listId);
+                    });
+                });
+            };
+
+            const renderMainContent = () => {
+                const listTitleEl = document.getElementById('list-title');
+                const progressMessageEl = document.getElementById('progress-message');
+                const progressBarEl = document.getElementById('progress-bar');
+                const progressNumbersEl = document.getElementById('progress-numbers');
+                const tasksSectionEl = document.getElementById('tasks-section');
+
+                if (!appState.activeListId || !appState.lists[appState.activeListId]) {
+                    listTitleEl.value = '';
+                    listTitleEl.disabled = true;
+                    progressMessageEl.textContent = 'Selecciona o crea una lista';
+                    progressBarEl.style.width = '0%';
+                    progressNumbersEl.textContent = '0/0';
+                    tasksSectionEl.innerHTML = '<div class="empty-state"><div>Selecciona una lista para comenzar</div></div>';
+                    return;
+                }
+
+                const currentList = appState.lists[appState.activeListId];
+                const tasks = currentList.tasks;
+                const completedTasks = tasks.filter(task => task.completed);
+                const totalTasks = tasks.length;
+                const pendingTasks = totalTasks - completedTasks.length;
+
+                // Update header
+                listTitleEl.value = currentList.name;
+                listTitleEl.disabled = false;
+
+                // Update progress
+                const progressPercentage = totalTasks === 0 ? 0 : (completedTasks.length / totalTasks) * 100;
+                progressBarEl.style.width = `${progressPercentage}%`;
+                progressNumbersEl.textContent = `${completedTasks.length}/${totalTasks}`;
+
+                // Update progress message
+                if (totalTasks === 0) {
+                    progressMessageEl.textContent = '¡Agrega tu primera tarea!';
+                    progressMessageEl.style.color = '#fff';
+                } else if (completedTasks.length === totalTasks) {
+                    progressMessageEl.innerHTML = '¡Felicidades, completaste todas tus tareas! 🎉';
+                    progressMessageEl.style.color = '#04fc57';
+                    showCompletionAnimation();
+                } else if (completedTasks.length === 0) {
+                    progressMessageEl.textContent = `Tienes ${totalTasks} tarea${totalTasks > 1 ? 's' : ''} pendiente${totalTasks > 1 ? 's' : ''}`;
+                    progressMessageEl.style.color = '#fff';
+                } else {
+                    progressMessageEl.textContent = `¡Vas bien! Te quedan ${pendingTasks} tarea${pendingTasks > 1 ? 's' : ''}`;
+                    progressMessageEl.style.color = '#fff';
+                }
+
+                // Render tasks
+                if (totalTasks === 0) {
+                    tasksSectionEl.innerHTML = `
+                        <div class="empty-state">
+                            <img src="./images/empety.jpg" alt="empty" class="empty-image">
+                            <div>No hay tareas aún</div>
+                        </div>
+                    `;
+                } else {
+                    tasksSectionEl.innerHTML = '';
+                    
+                    // Sort tasks: starred first, then incomplete, then completed
+                    const sortedTasks = [...tasks].sort((a, b) => {
+                        if (a.starred && !b.starred) return -1;
+                        if (!a.starred && b.starred) return 1;
+                        if (a.completed && !b.completed) return 1;
+                        if (!a.completed && b.completed) return -1;
+                        return b.createdAt - a.createdAt;
+                    });
+
+                    sortedTasks.forEach(task => {
+                        const taskElement = document.createElement('div');
+                        taskElement.className = `task-item ${task.completed ? 'completed' : ''}`;
+                        taskElement.innerHTML = `
+                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} data-task-id="${task.id}">
+                            <div class="task-text" data-task-id="${task.id}">${task.text}</div>
+                            <button class="star-btn ${task.starred ? 'starred' : ''}" data-task-id="${task.id}">
+                                <i class="fa-${task.starred ? 'solid' : 'regular'} fa-star"></i>
+                            </button>
+                            <div class="task-actions">
+                                <button class="task-action-btn edit-btn" data-task-id="${task.id}">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="task-action-btn delete-btn" data-task-id="${task.id}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        tasksSectionEl.appendChild(taskElement);
+                    });
+                }
+            };
+
+            // ============================================================
+            // CONFETTI ANIMATION
+            // ============================================================
+            const showCompletionAnimation = () => {
+                const confettiContainer = document.createElement('div');
+                confettiContainer.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.cssText = `
+                        position: absolute;
+                        width: 10px;
+                        height: 10px;
+                        background: ${['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'][Math.floor(Math.random() * 5)]};
+                        left: ${Math.random() * 100}vw;
+                        animation: confetti-fall 3s linear forwards;
+                        border-radius: 50%;
+                    `;
+                    confettiContainer.appendChild(confetti);
+                }
+                
+                document.body.appendChild(confettiContainer);
+                
+                setTimeout(() => {
+                    if (document.body.contains(confettiContainer)) {
+                        document.body.removeChild(confettiContainer);
+                    }
+                }, 3000);
+            };
+
+            // ============================================================
+            // EVENT HANDLERS SETUP
+            // ============================================================
+            const setupEventHandlers = () => {
+                // Create new list
+                document.querySelector('.create-list-btn').addEventListener('click', createNewList);
+
+                // Update list title
+                const listTitleEl = document.getElementById('list-title');
+                listTitleEl.addEventListener('blur', () => {
+                    if (appState.activeListId) {
+                        updateListName(appState.activeListId, listTitleEl.value);
+                    }
+                });
+                listTitleEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        listTitleEl.blur();
+                    }
+                });
+
+                // Add task
+                const taskInputEl = document.getElementById('task-input');
+                const addTaskBtnEl = document.getElementById('add-task-btn');
+                
+                const handleAddTask = () => {
+                    addTask(taskInputEl.value);
+                    taskInputEl.value = '';
+                };
+
+                addTaskBtnEl.addEventListener('click', handleAddTask);
+                taskInputEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        handleAddTask();
+                    }
+                });
+
+                // Task actions (using event delegation)
+                const tasksSectionEl = document.getElementById('tasks-section');
+                tasksSectionEl.addEventListener('click', (e) => {
+                    const taskId = e.target.dataset.taskId;
+                    if (!taskId) return;
+
+                    if (e.target.classList.contains('task-checkbox')) {
+                        toggleTask(taskId);
+                    } else if (e.target.closest('.star-btn')) {
+                        toggleStar(taskId);
+                    } else if (e.target.closest('.edit-btn')) {
+                        editTaskInline(taskId, e.target);
+                    } else if (e.target.closest('.delete-btn')) {
+                        if (confirm('¿Eliminar esta tarea?')) {
+                            deleteTask(taskId);
+                        }
+                    }
+                });
+            };
+
+            const editTaskInline = (taskId, editBtn) => {
+                if (!appState.activeListId) return;
+                
+                const task = appState.lists[appState.activeListId].tasks.find(t => t.id === taskId);
+                if (!task || task.completed) return;
+
+                const taskTextEl = document.querySelector(`[data-task-id="${taskId}"].task-text`);
+                const currentText = taskTextEl.textContent;
+                
+                const editInput = document.createElement('input');
+                editInput.type = 'text';
+                editInput.value = currentText;
+                editInput.className = 'task-text';
+                editInput.style.cssText = `
+                    background: transparent;
+                    border: 2px solid #04fc57;
+                    border-radius: 10px;
+                    color: white;
+                    padding: 5px 10px;
+                    font-size: 1.1rem;
+                    outline: none;
+                    flex: 1;
+                `;
+                
+                taskTextEl.replaceWith(editInput);
+                editInput.focus();
+                editInput.select();
+                
+                const saveEdit = () => {
+                    const newText = editInput.value.trim();
+                    if (newText !== '') {
+                        editTask(taskId, newText);
+                    } else {
+                        // Restore original text if empty
+                        const newTaskTextEl = document.createElement('div');
+                        newTaskTextEl.className = 'task-text';
+                        newTaskTextEl.dataset.taskId = taskId;
+                        newTaskTextEl.textContent = currentText;
+                        editInput.replaceWith(newTaskTextEl);
+                    }
+                };
+                
+                const cancelEdit = () => {
+                    const newTaskTextEl = document.createElement('div');
+                    newTaskTextEl.className = 'task-text';
+                    newTaskTextEl.dataset.taskId = taskId;
+                    newTaskTextEl.textContent = currentText;
+                    editInput.replaceWith(newTaskTextEl);
+                };
+                
+                let isHandled = false;
+                
+                editInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !isHandled) {
+                        e.preventDefault();
+                        isHandled = true;
+                        saveEdit();
+                    }
+                });
+                
+                editInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !isHandled) {
+                        e.preventDefault();
+                        isHandled = true;
+                        cancelEdit();
+                    }
+                });
+                
+                editInput.addEventListener('blur', () => {
+                    if (!isHandled) {
+                        isHandled = true;
+                        saveEdit();
+                    }
+                });
+            };
+
+            // ============================================================
+            // INITIALIZATION
+            // ============================================================
+            const init = () => {
+                createAppStructure();
+                loadFromStorage();
+                setupEventHandlers();
+                renderLists();
+                renderMainContent();
+            };
+
+            // Start the application
+            init();
+        });
+    </script>
 </body>
 </html>
