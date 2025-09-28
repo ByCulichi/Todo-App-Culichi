@@ -15,10 +15,39 @@
 <body>
     <!-- Contenedor principal de la aplicación -->
     <div class="container">
+        
+        <!-- Sidebar para gestión de listas -->
+        <div class="lists-sidebar">
+            <div class="sidebar-header">
+                <h2>Mis Listas</h2>
+                <button id="create-list-btn" class="create-list-btn">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="lists-container">
+                <!-- Lista por defecto -->
+                <div class="list-item active" data-list-id="default">
+                    <div class="list-color" style="background: #04fc57;"></div>
+                    <span class="list-name">Tareas</span>
+                    <span class="list-count">0</span>
+                </div>
+            </div>
+        </div>
 
         <div class="todo-app">
-            <!-- Título principal -->
-            <h1>Todo App</h1>
+            <!-- Título principal con nombre de lista actual -->
+            <div class="app-header">
+                <h1 id="current-list-name">Tareas</h1>
+                <div class="list-options">
+                    <button id="rename-list-btn" class="list-option-btn">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button id="delete-list-btn" class="list-option-btn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
 
             <!-- Sección de estadísticas y progreso -->
             <div class="stat-container">
