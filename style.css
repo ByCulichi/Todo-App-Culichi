@@ -25,41 +25,196 @@ body {
 }
 
 /* ============================================================
-    Contenedor principal centrado
+    Contenedor principal centrado con layout de sidebar
    ============================================================ */
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
-    padding: 0 20px;
+    height: 100vh;
+    padding: 20px;
+    gap: 30px;
 }
 
 /* ============================================================
-    Tarjeta principal de la Todo App - UI más grande y clara
+    Sidebar para gestión de listas - Microsoft To-Do Style
+   ============================================================ */
+.lists-sidebar {
+    width: 280px;
+    max-height: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.sidebar-header h2 {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.create-list-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(4, 252, 87, 0.8);
+    border: 2px solid rgba(4, 252, 87, 0.8);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-list-btn:hover {
+    transform: scale(1.1);
+    background: #04fc57;
+    box-shadow: 0 4px 15px rgba(4, 252, 87, 0.3);
+}
+
+.lists-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.list-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.list-item.active {
+    background: rgba(4, 252, 87, 0.2);
+    border-color: rgba(4, 252, 87, 0.4);
+}
+
+.list-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.list-name {
+    flex: 1;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.list-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* ============================================================
+    Header de la aplicación con opciones de lista
+   ============================================================ */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.app-header h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    margin: 0;
+    flex: 1;
+}
+
+.list-options {
+    display: flex;
+    gap: 10px;
+}
+
+.list-option-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.list-option-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.list-option-btn:first-child:hover {
+    background: rgba(4, 252, 87, 0.3);
+    border-color: rgba(4, 252, 87, 0.5);
+}
+
+.list-option-btn:last-child:hover {
+    background: rgba(248, 0, 0, 0.3);
+    border-color: rgba(248, 0, 0, 0.5);
+}
+
+/* ============================================================
+    Tarjeta principal de la Todo App - Ajustada para layout con sidebar
    ============================================================ */
 .todo-app {
     width: 100%;
-    max-width: 450px; /* Tamaño ligeramente mayor */
-    padding: 2.5rem; /* Mayor padding */
+    max-width: 450px;
+    max-height: 600px;
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 35px; /* Mayor espacio entre elementos */
+    justify-content: flex-start;
+    gap: 25px;
     color: #fff;
-    border-radius: 25px; /* Bordes más redondeados */
-    box-shadow: 0 0 120px rgba(0, 0, 0, 0.6), 0 15px 35px rgba(0, 0, 0, 0.3); /* Sombras más suaves */
+    border-radius: 25px;
+    box-shadow: 0 0 120px rgba(0, 0, 0, 0.6), 0 15px 35px rgba(0, 0, 0, 0.3);
     border: 3px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
+    overflow: hidden;
 }
 
-.todo-app h1 {
-    font-size: 2.4rem; /* Título más grande */
-    font-weight: 600;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
+
 
 /* ============================================================
     Sección de estadísticas y barra de progreso - Mejorada
@@ -371,5 +526,45 @@ body {
     100% {
         transform: translateY(100vh) rotate(720deg);
         opacity: 0;
+    }
+}
+
+/* ============================================================
+    Responsive Design - Mobile adaptado para sidebar
+   ============================================================ */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 15px;
+        gap: 20px;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .lists-sidebar {
+        width: 100%;
+        max-width: 400px;
+        max-height: 200px;
+        order: -1;
+    }
+    
+    .lists-container {
+        max-height: 120px;
+    }
+    
+    .todo-app {
+        width: 100%;
+        max-width: 400px;
+        max-height: none;
+    }
+    
+    .app-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .list-option-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
     }
 }
