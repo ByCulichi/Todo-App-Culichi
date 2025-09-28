@@ -1,4 +1,4 @@
-# 🌟 ToDo App Culichi
+# 🌟 ToDo Culichi
 
 Una moderna aplicación de lista de tareas con una interfaz elegante y funcionalidades avanzadas, desarrollada con **HTML5**, **CSS3** y **JavaScript Vanilla**.
 
